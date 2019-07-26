@@ -16,5 +16,6 @@ namespace _1000Words.Models
         [Required]
         [Display(Name = "Last Name")]
         public string LastName { get; set; }
+
     }
 }
