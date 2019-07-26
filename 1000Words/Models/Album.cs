@@ -17,5 +17,9 @@ namespace _1000Words.Models
         public int UserId { get; set; }
 
         public ApplicationUser User { get; set; }
+
+        public virtual ICollection<PhotoAlbum> PhotoAlbums { get; set; }
+
+        public virtual ICollection<PhotoDescription> PhotoDescriptions { get; set; }
     }
 }

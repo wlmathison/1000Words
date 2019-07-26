@@ -6,14 +6,18 @@ using System.Threading.Tasks;
 
 namespace _1000Words.Models
 {
-    public class Description
+    public class PhotoAlbum
     {
         public int Id { get; set; }
 
         [Required]
-        public string Keyword { get; set; }
+        public int AlbumId { get; set; }
 
-        public virtual ICollection<PhotoDescription> PhotoDescriptions { get; set; }
+        public Album Album { get; set; }
 
+        [Required]
+        public int PhotoId { get; set; }
+
+        public Photo Photo { get; set; }
     }
 }
