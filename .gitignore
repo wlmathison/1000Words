@@ -262,3 +262,6 @@ __pycache__/
 
 # Visual Studio Code
 .vscode/
+
+# Google API Credentials
+words-247918-f13fa4057b4a.json
