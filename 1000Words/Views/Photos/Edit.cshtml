@@ -3,7 +3,6 @@
 @{
     ViewData["Title"] = "Edit";
     var photoPath = "~/images/" + (Model.Path ?? "noimage.jpg");
-
 }
 
 <h1>Edit Photo</h1>
@@ -30,7 +29,7 @@
                     <input class="form-check-input" asp-for="IsFavorite" /> @Html.DisplayNameFor(model => model.IsFavorite)
                 </label>
             </div>
-                        <input type="hidden" asp-for="UserId" />
+            <input type="hidden" asp-for="UserId" />
             <div class="form-group">
                 <input type="submit" value="Save" class="btn btn-primary" />
             </div>

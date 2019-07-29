@@ -11,9 +11,11 @@ using Microsoft.AspNetCore.Hosting;
 using _1000Words.Models.ViewModels;
 using System.IO;
 using Microsoft.AspNetCore.Identity;
+using Microsoft.AspNetCore.Authorization;
 
 namespace _1000Words.Controllers
 {
+    [Authorize]
     public class PhotosController : Controller
     {
         private readonly ApplicationDbContext _context;
