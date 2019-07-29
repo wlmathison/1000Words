@@ -14,7 +14,7 @@ namespace _1000Words.Models
         public string Name { get; set; }
 
         [Required]
-        public int UserId { get; set; }
+        public string UserId { get; set; }
 
         public ApplicationUser User { get; set; }
 

@@ -10,7 +10,7 @@ using _1000Words.Data;
 namespace _1000Words.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    [Migration("20190727202126_initial")]
+    [Migration("20190729202733_initial")]
     partial class initial
     {
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -144,13 +144,12 @@ namespace _1000Words.Migrations
                     b.Property<string>("Name")
                         .IsRequired();
 
-                    b.Property<int>("UserId");
-
-                    b.Property<string>("UserId1");
+                    b.Property<string>("UserId")
+                        .IsRequired();
 
                     b.HasKey("Id");
 
-                    b.HasIndex("UserId1");
+                    b.HasIndex("UserId");
 
                     b.ToTable("Albums");
                 });
@@ -216,7 +215,7 @@ namespace _1000Words.Migrations
                         {
                             Id = "00000000-ffff-ffff-ffff-ffffffffffff",
                             AccessFailedCount = 0,
-                            ConcurrencyStamp = "3d57c776-4415-4127-bcfd-1611c33d73bb",
+                            ConcurrencyStamp = "a2cf6e39-1041-436e-a4a6-9b059e14c4dd",
                             Email = "admin@admin.com",
                             EmailConfirmed = true,
                             FirstName = "John",
@@ -224,7 +223,7 @@ namespace _1000Words.Migrations
                             LockoutEnabled = false,
                             NormalizedEmail = "ADMIN@ADMIN.COM",
                             NormalizedUserName = "ADMIN",
-                            PasswordHash = "AQAAAAEAACcQAAAAEM2hxK+k9VqkIm34x2S+ICvMlEgxahsOrTRfvGKA5pK174ZH7kpWjgpm6U5yLnTXDg==",
+                            PasswordHash = "AQAAAAEAACcQAAAAED3Q58bugikF8SjnE38RictnBsrUz8Xmzmpg7wAWuZ979WCbkL/Re59eNf0HTeu7cA==",
                             PhoneNumberConfirmed = false,
                             SecurityStamp = "7f434309-a4d9-48e9-9ebb-8803db794577",
                             TwoFactorEnabled = false,
@@ -259,13 +258,12 @@ namespace _1000Words.Migrations
                     b.Property<string>("Path")
                         .IsRequired();
 
-                    b.Property<int>("UserId");
-
-                    b.Property<string>("UserId1");
+                    b.Property<string>("UserId")
+                        .IsRequired();
 
                     b.HasKey("Id");
 
-                    b.HasIndex("UserId1");
+                    b.HasIndex("UserId");
 
                     b.ToTable("Photos");
                 });
@@ -361,14 +359,16 @@ namespace _1000Words.Migrations
                 {
                     b.HasOne("_1000Words.Models.ApplicationUser", "User")
                         .WithMany()
-                        .HasForeignKey("UserId1");
+                        .HasForeignKey("UserId")
+                        .OnDelete(DeleteBehavior.Cascade);
                 });
 
             modelBuilder.Entity("_1000Words.Models.Photo", b =>
                 {
                     b.HasOne("_1000Words.Models.ApplicationUser", "User")
                         .WithMany()
-                        .HasForeignKey("UserId1");
+                        .HasForeignKey("UserId")
+                        .OnDelete(DeleteBehavior.Cascade);
                 });
 
             modelBuilder.Entity("_1000Words.Models.PhotoAlbum", b =>
@@ -376,12 +376,12 @@ namespace _1000Words.Migrations
                     b.HasOne("_1000Words.Models.Album", "Album")
                         .WithMany("PhotoAlbums")
                         .HasForeignKey("AlbumId")
-                        .OnDelete(DeleteBehavior.Cascade);
+                        .OnDelete(DeleteBehavior.Restrict);
 
                     b.HasOne("_1000Words.Models.Photo", "Photo")
                         .WithMany("PhotoAlbums")
                         .HasForeignKey("PhotoId")
-                        .OnDelete(DeleteBehavior.Cascade);
+                        .OnDelete(DeleteBehavior.Restrict);
                 });
 
             modelBuilder.Entity("_1000Words.Models.PhotoDescription", b =>
