@@ -31,7 +31,7 @@ namespace _1000Words.Data
                 .WithOne(pa => pa.Photo)
                 .OnDelete(DeleteBehavior.Restrict);
 
-            // Restrict deletion of related photo when PhotoAlbum entry is removed
+            // Restrict deletion of related album when PhotoAlbum entry is removed
             modelBuilder.Entity<Album>()
                 .HasMany(a => a.PhotoAlbums)
                 .WithOne(pa => pa.Album)
