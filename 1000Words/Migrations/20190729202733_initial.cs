@@ -90,18 +90,17 @@ namespace _1000Words.Migrations
                     Id = table.Column<int>(nullable: false)
                         .Annotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn),
                     Name = table.Column<string>(nullable: false),
-                    UserId = table.Column<int>(nullable: false),
-                    UserId1 = table.Column<string>(nullable: true)
+                    UserId = table.Column<string>(nullable: false)
                 },
                 constraints: table =>
                 {
                     table.PrimaryKey("PK_Albums", x => x.Id);
                     table.ForeignKey(
-                        name: "FK_Albums_AspNetUsers_UserId1",
-                        column: x => x.UserId1,
+                        name: "FK_Albums_AspNetUsers_UserId",
+                        column: x => x.UserId,
                         principalTable: "AspNetUsers",
                         principalColumn: "Id",
-                        onDelete: ReferentialAction.Restrict);
+                        onDelete: ReferentialAction.Cascade);
                 });
 
             migrationBuilder.CreateTable(
@@ -198,18 +197,17 @@ namespace _1000Words.Migrations
                     Date = table.Column<DateTime>(nullable: true),
                     Path = table.Column<string>(nullable: false),
                     IsFavorite = table.Column<bool>(nullable: false),
-                    UserId = table.Column<int>(nullable: false),
-                    UserId1 = table.Column<string>(nullable: true)
+                    UserId = table.Column<string>(nullable: false)
                 },
                 constraints: table =>
                 {
                     table.PrimaryKey("PK_Photos", x => x.Id);
                     table.ForeignKey(
-                        name: "FK_Photos_AspNetUsers_UserId1",
-                        column: x => x.UserId1,
+                        name: "FK_Photos_AspNetUsers_UserId",
+                        column: x => x.UserId,
                         principalTable: "AspNetUsers",
                         principalColumn: "Id",
-                        onDelete: ReferentialAction.Restrict);
+                        onDelete: ReferentialAction.Cascade);
                 });
 
             migrationBuilder.CreateTable(
@@ -229,13 +227,13 @@ namespace _1000Words.Migrations
                         column: x => x.AlbumId,
                         principalTable: "Albums",
                         principalColumn: "Id",
-                        onDelete: ReferentialAction.Cascade);
+                        onDelete: ReferentialAction.Restrict);
                     table.ForeignKey(
                         name: "FK_PhotoAlbums_Photos_PhotoId",
                         column: x => x.PhotoId,
                         principalTable: "Photos",
                         principalColumn: "Id",
-                        onDelete: ReferentialAction.Cascade);
+                        onDelete: ReferentialAction.Restrict);
                 });
 
             migrationBuilder.CreateTable(
@@ -274,12 +272,12 @@ namespace _1000Words.Migrations
             migrationBuilder.InsertData(
                 table: "AspNetUsers",
                 columns: new[] { "Id", "AccessFailedCount", "ConcurrencyStamp", "Email", "EmailConfirmed", "FirstName", "LastName", "LockoutEnabled", "LockoutEnd", "NormalizedEmail", "NormalizedUserName", "PasswordHash", "PhoneNumber", "PhoneNumberConfirmed", "SecurityStamp", "TwoFactorEnabled", "UserName" },
-                values: new object[] { "00000000-ffff-ffff-ffff-ffffffffffff", 0, "3d57c776-4415-4127-bcfd-1611c33d73bb", "admin@admin.com", true, "John", "Doe", false, null, "ADMIN@ADMIN.COM", "ADMIN", "AQAAAAEAACcQAAAAEM2hxK+k9VqkIm34x2S+ICvMlEgxahsOrTRfvGKA5pK174ZH7kpWjgpm6U5yLnTXDg==", null, false, "7f434309-a4d9-48e9-9ebb-8803db794577", false, "admin" });
+                values: new object[] { "00000000-ffff-ffff-ffff-ffffffffffff", 0, "a2cf6e39-1041-436e-a4a6-9b059e14c4dd", "admin@admin.com", true, "John", "Doe", false, null, "ADMIN@ADMIN.COM", "ADMIN", "AQAAAAEAACcQAAAAED3Q58bugikF8SjnE38RictnBsrUz8Xmzmpg7wAWuZ979WCbkL/Re59eNf0HTeu7cA==", null, false, "7f434309-a4d9-48e9-9ebb-8803db794577", false, "admin" });
 
             migrationBuilder.CreateIndex(
-                name: "IX_Albums_UserId1",
+                name: "IX_Albums_UserId",
                 table: "Albums",
-                column: "UserId1");
+                column: "UserId");
 
             migrationBuilder.CreateIndex(
                 name: "IX_AspNetRoleClaims_RoleId",
@@ -346,9 +344,9 @@ namespace _1000Words.Migrations
                 column: "PhotoId");
 
             migrationBuilder.CreateIndex(
-                name: "IX_Photos_UserId1",
+                name: "IX_Photos_UserId",
                 table: "Photos",
-                column: "UserId1");
+                column: "UserId");
         }
 
         protected override void Down(MigrationBuilder migrationBuilder)

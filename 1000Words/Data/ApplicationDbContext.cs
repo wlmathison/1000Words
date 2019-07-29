@@ -25,6 +25,18 @@ namespace _1000Words.Data
         {
             base.OnModelCreating(modelBuilder);
 
+            // Restrict deletion of related photo when PhotoAlbum entry is removed
+            modelBuilder.Entity<Photo>()
+                .HasMany(p => p.PhotoAlbums)
+                .WithOne(pa => pa.Photo)
+                .OnDelete(DeleteBehavior.Restrict);
+
+            // Restrict deletion of related album when PhotoAlbum entry is removed
+            modelBuilder.Entity<Album>()
+                .HasMany(a => a.PhotoAlbums)
+                .WithOne(pa => pa.Album)
+                .OnDelete(DeleteBehavior.Restrict);
+
             ApplicationUser user = new ApplicationUser
             {
                 FirstName = "John",
