@@ -12,6 +12,7 @@ using _1000Words.Models.ViewModels;
 using System.IO;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Http;
 
 namespace _1000Words.Controllers
 {
@@ -114,16 +115,17 @@ namespace _1000Words.Controllers
         // more details see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> CreateMultiple([Bind("Id,Date,Path,IsFavorite,UserId, Photo")] IEnumerable<PhotoCreateViewModel> models)
+        public async Task<IActionResult> CreateMultiple([Bind("Id,Date,Path,IsFavorite,UserId,Photo,Photos")] PhotoCreateMultipleViewModel model)
         {
-            foreach (var model in models)
+            if (ModelState.IsValid)
             {
-                if (ModelState.IsValid)
-                {
-                    string uniqueFileName = null;
-                    var currentUser = await GetCurrentUserAsync();
+                string uniqueFileName = null;
+                var currentUser = await GetCurrentUserAsync();
 
-                    if (model.Photo != null)
+                // If user selects more than one image
+                if (model.Photos != null && model.Photos.Count > 0)
+                {
+                    foreach (IFormFile indPhoto in model.Photos)
                     {
                         // The image must be uploaded to the images folder in wwwroot
                         // To get the path of the wwwroot folder we are using the inject
@@ -131,22 +133,24 @@ namespace _1000Words.Controllers
                         string uploadsFolder = Path.Combine(hostingEnvironment.WebRootPath, "images");
                         // To make sure the file name is unique we are appending a new
                         // GUID value and and an underscore to the file name
-                        uniqueFileName = Guid.NewGuid().ToString() + "_" + model.Photo.FileName;
+                        uniqueFileName = Guid.NewGuid().ToString() + "_" + indPhoto.FileName;
                         string filePath = Path.Combine(uploadsFolder, uniqueFileName);
                         // Use CopyTo() method provided by IFormFile interface to
                         // copy the file to wwwroot/images folder
-                        model.Photo.CopyTo(new FileStream(filePath, FileMode.Create));
+                        indPhoto.CopyTo(new FileStream(filePath, FileMode.Create));
+
+                        Photo photo = new Photo
+                        {
+                            Path = uniqueFileName,
+                            UserId = currentUser.Id
+                        };
+
+                        _context.Add(photo);
+                        await _context.SaveChangesAsync();
                     }
 
-                    Photo photo = new Photo
-                    {
-                        Path = uniqueFileName,
-                        UserId = currentUser.Id
-                    };
-
-                    _context.Add(photo);
-                    await _context.SaveChangesAsync();
                 }
+
                 return RedirectToAction(nameof(Index));
             }
             return View();
