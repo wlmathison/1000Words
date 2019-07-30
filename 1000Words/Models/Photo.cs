@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
+using System.ComponentModel.DataAnnotations.Schema;
 using System.Linq;
 using System.Threading.Tasks;
 
@@ -23,6 +24,23 @@ namespace _1000Words.Models
         public ApplicationUser User { get; set; }
 
         public virtual ICollection<PhotoAlbum> PhotoAlbums { get; set; }
+
+        [NotMapped]
+        [Display(Name ="Date Taken")]
+        public string FormattedDate
+        {
+            get
+            {
+                if (Date != null)
+                {
+                    return Date.Value.ToShortDateString();
+                }
+                else
+                {
+                    return null;
+                }
+            }
+        }
 
     }
 }
