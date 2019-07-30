@@ -13,6 +13,7 @@ using System.IO;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
+using ExifLib;
 
 namespace _1000Words.Controllers
 {
@@ -75,6 +76,7 @@ namespace _1000Words.Controllers
             {
                 string uniqueFileName = null;
                 var currentUser = await GetCurrentUserAsync();
+                string filePath = null;
 
                 if (model.Photo != null)
                 {
@@ -85,10 +87,13 @@ namespace _1000Words.Controllers
                     // To make sure the file name is unique we are appending a new
                     // GUID value and and an underscore to the file name
                     uniqueFileName = Guid.NewGuid().ToString() + "_" + model.Photo.FileName;
-                    string filePath = Path.Combine(uploadsFolder, uniqueFileName);
+                    filePath = Path.Combine(uploadsFolder, uniqueFileName);
                     // Use CopyTo() method provided by IFormFile interface to
                     // copy the file to wwwroot/images folder
-                    model.Photo.CopyTo(new FileStream(filePath, FileMode.Create));
+                    using (FileStream fileStream = new FileStream(filePath, FileMode.Create))
+                    {
+                        model.Photo.CopyTo(fileStream);
+                    }
                 }
 
                 Photo photo = new Photo
@@ -96,6 +101,15 @@ namespace _1000Words.Controllers
                     Path = uniqueFileName,
                     UserId = currentUser.Id
                 };
+
+                using (ExifReader reader = new ExifReader(filePath))
+                {
+                    DateTime dateTime;
+                    if (reader.GetTagValue<DateTime>(ExifTags.DateTimeDigitized, out dateTime))
+                    {
+                        photo.Date = dateTime;
+                    }
+                }
 
                 _context.Add(photo);
                 await _context.SaveChangesAsync();
@@ -120,6 +134,7 @@ namespace _1000Words.Controllers
             if (ModelState.IsValid)
             {
                 string uniqueFileName = null;
+                string filePath = null;
                 var currentUser = await GetCurrentUserAsync();
 
                 // If user selects more than one image
@@ -134,16 +149,28 @@ namespace _1000Words.Controllers
                         // To make sure the file name is unique we are appending a new
                         // GUID value and and an underscore to the file name
                         uniqueFileName = Guid.NewGuid().ToString() + "_" + indPhoto.FileName;
-                        string filePath = Path.Combine(uploadsFolder, uniqueFileName);
+                        filePath = Path.Combine(uploadsFolder, uniqueFileName);
                         // Use CopyTo() method provided by IFormFile interface to
                         // copy the file to wwwroot/images folder
-                        indPhoto.CopyTo(new FileStream(filePath, FileMode.Create));
+                        using (FileStream fileStream = new FileStream(filePath, FileMode.Create))
+                        {
+                            indPhoto.CopyTo(fileStream);
+                        }
 
                         Photo photo = new Photo
                         {
                             Path = uniqueFileName,
                             UserId = currentUser.Id
                         };
+
+                        using (ExifReader reader = new ExifReader(filePath))
+                        {
+                            DateTime dateTime;
+                            if (reader.GetTagValue<DateTime>(ExifTags.DateTimeDigitized, out dateTime))
+                            {
+                                photo.Date = dateTime;
+                            }
+                        }
 
                         _context.Add(photo);
                         await _context.SaveChangesAsync();
