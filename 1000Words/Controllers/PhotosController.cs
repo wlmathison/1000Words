@@ -98,9 +98,58 @@ namespace _1000Words.Controllers
 
                 _context.Add(photo);
                 await _context.SaveChangesAsync();
-                return RedirectToAction("Edit" , new { id = photo.Id });
+                return RedirectToAction("Edit", new { id = photo.Id });
             }
             return View(model);
+        }
+
+        // GET: Photos/CreateMultiple
+        public IActionResult CreateMultiple()
+        {
+            return View();
+        }
+
+        // POST: Photos/CreateMultiple
+        // To protect from overposting attacks, please enable the specific properties you want to bind to, for 
+        // more details see http://go.microsoft.com/fwlink/?LinkId=317598.
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public async Task<IActionResult> CreateMultiple([Bind("Id,Date,Path,IsFavorite,UserId, Photo")] IEnumerable<PhotoCreateViewModel> models)
+        {
+            foreach (var model in models)
+            {
+                if (ModelState.IsValid)
+                {
+                    string uniqueFileName = null;
+                    var currentUser = await GetCurrentUserAsync();
+
+                    if (model.Photo != null)
+                    {
+                        // The image must be uploaded to the images folder in wwwroot
+                        // To get the path of the wwwroot folder we are using the inject
+                        // HostingEnvironment service provided by ASP.NET Core
+                        string uploadsFolder = Path.Combine(hostingEnvironment.WebRootPath, "images");
+                        // To make sure the file name is unique we are appending a new
+                        // GUID value and and an underscore to the file name
+                        uniqueFileName = Guid.NewGuid().ToString() + "_" + model.Photo.FileName;
+                        string filePath = Path.Combine(uploadsFolder, uniqueFileName);
+                        // Use CopyTo() method provided by IFormFile interface to
+                        // copy the file to wwwroot/images folder
+                        model.Photo.CopyTo(new FileStream(filePath, FileMode.Create));
+                    }
+
+                    Photo photo = new Photo
+                    {
+                        Path = uniqueFileName,
+                        UserId = currentUser.Id
+                    };
+
+                    _context.Add(photo);
+                    await _context.SaveChangesAsync();
+                }
+                return RedirectToAction(nameof(Index));
+            }
+            return View();
         }
 
         // GET: Photos/Edit/5

@@ -13,5 +13,6 @@ namespace _1000Words.Models.ViewModels
 
         [Required]
         public IFormFile Photo { get; set; }
+        public List<IFormFile> Photos { get; set; }
     }
 }
