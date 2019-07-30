@@ -271,8 +271,11 @@ namespace _1000Words.Controllers
             string uploadsFolder = Path.Combine(hostingEnvironment.WebRootPath, "images");
             string filePath = Path.Combine(uploadsFolder, photo.Path);
 
-            //Deleting image from wwwroot/image folder
-            System.IO.File.Delete(filePath);
+            //Deleting image from wwwroot/image folder if it exists
+            if (System.IO.File.Exists(filePath))
+            {
+                System.IO.File.Delete(filePath);
+            }
 
             return RedirectToAction(nameof(Index));
         }
