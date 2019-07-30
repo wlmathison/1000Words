@@ -70,7 +70,7 @@ namespace _1000Words.Controllers
         // more details see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Create([Bind("Id,Date,Path,IsFavorite,UserId, Photo")] PhotoCreateViewModel model)
+        public async Task<IActionResult> Create([Bind("Id,Date,Path,IsFavorite,UserId,Photo")] PhotoCreateViewModel model)
         {
             if (ModelState.IsValid)
             {
@@ -102,13 +102,19 @@ namespace _1000Words.Controllers
                     UserId = currentUser.Id
                 };
 
-                using (ExifReader reader = new ExifReader(filePath))
+                try
                 {
-                    DateTime dateTime;
-                    if (reader.GetTagValue<DateTime>(ExifTags.DateTimeDigitized, out dateTime))
+                    using (ExifReader reader = new ExifReader(filePath))
                     {
-                        photo.Date = dateTime;
+                        DateTime dateTime;
+                        if (reader.GetTagValue<DateTime>(ExifTags.DateTimeDigitized, out dateTime))
+                        {
+                            photo.Date = dateTime;
+                        }
                     }
+                }
+                catch (ExifLibException)
+                {
                 }
 
                 _context.Add(photo);
@@ -260,6 +266,14 @@ namespace _1000Words.Controllers
             var photo = await _context.Photos.FindAsync(id);
             _context.Photos.Remove(photo);
             await _context.SaveChangesAsync();
+
+            //Geting path of image being deleted from the database
+            string uploadsFolder = Path.Combine(hostingEnvironment.WebRootPath, "images");
+            string filePath = Path.Combine(uploadsFolder, photo.Path);
+
+            //Deleting image from wwwroot/image folder
+            System.IO.File.Delete(filePath);
+
             return RedirectToAction(nameof(Index));
         }
 
