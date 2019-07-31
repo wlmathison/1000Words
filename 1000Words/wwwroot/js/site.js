@@ -68,10 +68,8 @@ function startRecording() {
 			Create the Recorder object and configure to record mono sound (1 channel)
 			Recording 2 channels  will double the file size
 		*/
-        console.log(Recorder);
-        console.log(typeof Recorder);
         rec = new Recorder(input, { numChannels: 1 })
-        
+
         //start the recording process
         rec.record()
 
@@ -118,4 +116,34 @@ function stopRecording() {
 
     //create the wav blob and pass it on to createDownloadLink
     rec.exportWAV(createDownloadLink);
+}
+
+function createDownloadLink(blob) {
+
+    var formData = new FormData();
+    formData.append("audio", blob);
+
+    fetch('http://localhost:5000/api/GoogleSpeech/', { method: 'POST', body: formData })
+        .then(function (response) {
+            return response.json();
+        }).then(function (myJson) {
+            console.log(JSON.stringify(myJson));
+        });
+
+    //var url = URL.createObjectURL(blob);
+    //var au = document.createElement('audio');
+    //var li = document.createElement('li');
+    //var link = document.createElement('a');
+    ////add controls to the <audio> element 
+    //au.controls = true;
+    //au.src = url;
+    ////link the a element to the blob 
+    //link.href = url;
+    //link.download = new Date().toISOString() + '.wav';
+    //link.innerHTML = link.download;
+    ////add the new audio and a elements to the li element 
+    //li.appendChild(au);
+    //li.appendChild(link);
+    ////add the li element to the ordered list 
+    //recordingsList.appendChild(li);
 }
