@@ -9,11 +9,17 @@
 
 <hr />
 <div class="row">
+    <div id="controls">
+        <button id="recordButton">Record</button>
+        <button id="pauseButton" disabled>Pause</button>
+        <button id="stopButton" disabled>Stop</button>
+    </div>
     <div class="col-md-4">
         <form asp-action="Edit">
             <div asp-validation-summary="ModelOnly" class="text-danger"></div>
             <input type="hidden" asp-for="Id" />
             <img class="card-img-top" src="@photoPath" asp-append-version="true" />
+
             <div class="form-group">
                 <label asp-for="Path" class="control-label"></label>
                 <input asp-for="Path" class="form-control" />
