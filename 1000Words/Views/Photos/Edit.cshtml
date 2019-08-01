@@ -8,16 +8,17 @@
 <h1>Edit Photo</h1>
 
 <hr />
+<div id="controls">
+    <button id="recordButton">Record</button>
+    <button id="pauseButton" disabled>Pause</button>
+    <button id="stopButton" disabled>Stop</button>
+</div>
+
 <div class="row">
-    <div id="controls">
-        <button id="recordButton">Record</button>
-        <button id="pauseButton" disabled>Pause</button>
-        <button id="stopButton" disabled>Stop</button>
-    </div>
     <div>
-        <h3>Recordings</h3>
         <ol id="recordingsList"></ol>
     </div>
+
     <div class="col-md-4">
         <form asp-action="Edit">
             <div asp-validation-summary="ModelOnly" class="text-danger"></div>

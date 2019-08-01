@@ -25,9 +25,12 @@ namespace _1000Words.Services
                 var response = speech.Recognize(new RecognitionConfig()
                 {
                     Encoding = RecognitionConfig.Types.AudioEncoding.Linear16,
-                    SampleRateHertz = 48000,
+                    //SampleRateHertz = 48000,
                     LanguageCode = "en",
                 }, recognitionAudio);
+
+                Keywords.Clear();
+
                 foreach (var result in response.Results)
                 {
                     foreach (var alternative in result.Alternatives)
