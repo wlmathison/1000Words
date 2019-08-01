@@ -14,13 +14,13 @@ var audioContext; //audio context to help us record
 
 var recordButton = document.getElementById("recordButton");
 var stopButton = document.getElementById("stopButton");
-var pauseButton = document.getElementById("pauseButton");
+//var pauseButton = document.getElementById("pauseButton");
 
 
 //add events to those 2 buttons
 recordButton.addEventListener("click", startRecording);
 stopButton.addEventListener("click", stopRecording);
-pauseButton.addEventListener("click", pauseRecording);
+//pauseButton.addEventListener("click", pauseRecording);
 
 function startRecording() {
     console.log("recordButton clicked");
@@ -38,7 +38,7 @@ function startRecording() {
 
     recordButton.disabled = true;
     stopButton.disabled = false;
-    pauseButton.disabled = false
+    //pauseButton.disabled = false
 
 	/*
     	We're using the standard promise based getUserMedia() 
@@ -83,18 +83,18 @@ function startRecording() {
     });
 }
 
-function pauseRecording() {
-    console.log("pauseButton clicked rec.recording=", rec.recording);
-    if (rec.recording) {
-        //pause
-        rec.stop();
-        pauseButton.innerHTML = "Resume";
-    } else {
-        //resume
-        rec.record()
-        pauseButton.innerHTML = "Pause";
-    }
-}
+//function pauseRecording() {
+//    console.log("pauseButton clicked rec.recording=", rec.recording);
+//    if (rec.recording) {
+//        //pause
+//        rec.stop();
+//        pauseButton.innerHTML = "Resume";
+//    } else {
+//        //resume
+//        rec.record()
+//        pauseButton.innerHTML = "Pause";
+//    }
+//}
 
 function stopRecording() {
     console.log("stopButton clicked");
@@ -102,10 +102,10 @@ function stopRecording() {
     //disable the stop button, enable the record too allow for new recordings
     stopButton.disabled = true;
     recordButton.disabled = false;
-    pauseButton.disabled = true;
+    //pauseButton.disabled = true;
 
     //reset button just in case the recording is stopped while paused
-    pauseButton.innerHTML = "Pause";
+    //pauseButton.innerHTML = "Pause";
 
     //tell the recorder to stop the recording
     rec.stop();
@@ -135,12 +135,20 @@ function createDownloadLink(blob) {
         }).then(function (myJson) {
             results = myJson.join();
         }).then(() => {
+            //Splitting results into individual words
             var resultsArray = results.split(" ");
+            //Filtering out only words not in list of stop words
             var filteredResults = resultsArray.filter(r => !stopWords.includes(r.toLowerCase()));
+            //Filtering out any duplicate words
+            var nonDuplicateFilteredResults = filteredResults.filter((item, index) => filteredResults.indexOf(item) === index);
+
+            nonDuplicateFilteredResults.forEach(r => {
+                var li = document.createElement('li');
+                li.textContent = r;
+                recordingsList.appendChild(li);
+            });
         });
 
-
-    //filteredResults = resultsArray.filter(r => !stopwords.any(r.toLowerCase()));
 
     //var url = URL.createObjectURL(blob);
     //var au = document.createElement('audio');

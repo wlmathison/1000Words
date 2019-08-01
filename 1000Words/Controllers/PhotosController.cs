@@ -56,6 +56,12 @@ namespace _1000Words.Controllers
                 return NotFound();
             }
 
+            var currentUser = await GetCurrentUserAsync();
+            if (currentUser.Id != photo.UserId)
+            {
+                return NotFound();
+            }
+
             return View(photo);
         }
 
@@ -202,7 +208,24 @@ namespace _1000Words.Controllers
             {
                 return NotFound();
             }
-            return View(photo);
+
+            var currentUser = await GetCurrentUserAsync();
+            if (currentUser.Id != photo.UserId)
+            {
+                return NotFound();
+            }
+
+            List<PhotoDescription> photoDescriptions = await _context.PhotoDescriptions.Where(pd => pd.PhotoId == id).ToListAsync();
+
+            List<Description> descriptions = await _context.Descriptions.Where(d => photoDescriptions.Any(pd => pd.DescriptionId == d.Id)).ToListAsync();
+
+            var model = new PhotoEditViewModel();
+
+            model.Photo = photo;
+            model.PhotoDescriptions = photoDescriptions;
+            model.Descriptions = descriptions;
+
+            return View(model);
         }
 
         // POST: Photos/Edit/5
@@ -210,9 +233,16 @@ namespace _1000Words.Controllers
         // more details see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Edit(int id, [Bind("Id,Date,Path,IsFavorite,UserId")] Photo photo)
+        public async Task<IActionResult> Edit(int id, [Bind("Id,Date,Path,IsFavorite,UserId")] PhotoEditViewModel model)
         {
-            if (id != photo.Id)
+            var currentUser = await GetCurrentUserAsync();
+
+            if (currentUser.Id != model.Photo.UserId)
+            {
+                return NotFound();
+            }
+
+            if (id != model.Photo.Id)
             {
                 return NotFound();
             }
@@ -221,12 +251,12 @@ namespace _1000Words.Controllers
             {
                 try
                 {
-                    _context.Update(photo);
+                    _context.Update(model.Photo);
                     await _context.SaveChangesAsync();
                 }
                 catch (DbUpdateConcurrencyException)
                 {
-                    if (!PhotoExists(photo.Id))
+                    if (!PhotoExists(model.Photo.Id))
                     {
                         return NotFound();
                     }
@@ -237,7 +267,7 @@ namespace _1000Words.Controllers
                 }
                 return RedirectToAction(nameof(Index));
             }
-            return View(photo);
+            return View(model);
         }
 
         // GET: Photos/Delete/5
@@ -251,6 +281,12 @@ namespace _1000Words.Controllers
             var photo = await _context.Photos
                 .FirstOrDefaultAsync(m => m.Id == id);
             if (photo == null)
+            {
+                return NotFound();
+            }
+
+            var currentUser = await GetCurrentUserAsync();
+            if (currentUser.Id != photo.UserId)
             {
                 return NotFound();
             }

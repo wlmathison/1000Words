@@ -1,8 +1,8 @@
-﻿@model _1000Words.Models.Photo
+﻿@model _1000Words.Models.ViewModels.PhotoEditViewModel
 
 @{
     ViewData["Title"] = "Edit";
-    var photoPath = "~/images/" + (Model.Path ?? "noimage.jpg");
+    var photoPath = "~/images/" + (Model.Photo.Path ?? "noimage.jpg");
 }
 
 <h1>Edit Photo</h1>
@@ -10,33 +10,27 @@
 <hr />
 <div id="controls">
     <button id="recordButton">Record</button>
-    <button id="pauseButton" disabled>Pause</button>
     <button id="stopButton" disabled>Stop</button>
 </div>
 
-<div class="row">
-    <div>
-        <ol id="recordingsList"></ol>
-    </div>
+<div>
+    <ul id="recordingsList"></ul>
+</div>
 
+<div class="row">
     <div class="col-md-4">
         <form asp-action="Edit">
             <div asp-validation-summary="ModelOnly" class="text-danger"></div>
-            <input type="hidden" asp-for="Id" />
+            <input type="hidden" asp-for="Photo.Id" />
             <img class="card-img-top" src="@photoPath" asp-append-version="true" />
-
-            <div class="form-group">
-                <label asp-for="Path" class="control-label"></label>
-                <input asp-for="Path" class="form-control" />
-                <span asp-validation-for="Path" class="text-danger"></span>
-            </div>
+            <input type="hidden" asp-for="Photo.Path" />
             <div class="form-group form-check">
                 <label class="form-check-label">
-                    <input class="form-check-input" asp-for="IsFavorite" /> @Html.DisplayNameFor(model => model.IsFavorite)
+                    <input class="form-check-input" asp-for="Photo.IsFavorite" /> @Html.DisplayNameFor(model => model.Photo.IsFavorite)
                 </label>
             </div>
-            <input type="hidden" asp-for="Date" />
-            <input type="hidden" asp-for="UserId" />
+            <input type="hidden" asp-for="Photo.Date" />
+            <input type="hidden" asp-for="Photo.UserId" />
             <div class="form-group">
                 <input type="submit" value="Save" class="btn btn-primary" />
             </div>
