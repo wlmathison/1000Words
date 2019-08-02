@@ -255,15 +255,17 @@ namespace _1000Words.Controllers
                 {
                     List<Description> descriptions = await _context.Descriptions.ToListAsync();
 
-                    foreach (string keyword in model.CheckedKeywords)
+                    List<PhotoDescription> existingPhotoDescriptions = await _context.PhotoDescriptions.Where(pd => pd.PhotoId == id).ToListAsync();
+
+                    //Remove all photoDescription joint tables on the current photo.
+                    existingPhotoDescriptions.ForEach(pd => _context.PhotoDescriptions.Remove(pd));
+
+                    if (model.CheckedKeywords != null)
                     {
-                        if (model.Descriptions != null)
+                        foreach (string keyword in model.CheckedKeywords)
                         {
-                            if (model.Descriptions.Any(m => m.Keyword.ToLower() == keyword.ToLower()))
-                            {
-                                break;
-                            }
-                            else if (descriptions.Any(m => m.Keyword.ToLower() == keyword.ToLower()))
+                            //If the keyword already exists in the Description database use that description id and add new joint table
+                            if (descriptions.Any(m => m.Keyword.ToLower() == keyword.ToLower()))
                             {
                                 var existingDescription = descriptions.Find(m => m.Keyword.ToLower() == keyword.ToLower());
 
@@ -272,24 +274,18 @@ namespace _1000Words.Controllers
                                 photoDescription.DescriptionId = existingDescription.Id;
                                 _context.Add(photoDescription);
                             }
+                            //Else create a new description and add both the new description and joint table
                             else
                             {
                                 Description description = new Description();
                                 description.Keyword = keyword;
                                 _context.Add(description);
-                            }
-                        }
-                        else
-                        {
-                            Description description = new Description();
-                            description.Keyword = keyword;
-                            await _context.SaveChangesAsync();
 
-                            List<Description> updatedDescriptions = await _context.Descriptions.ToListAsync();
-                            PhotoDescription photoDescription = new PhotoDescription();
-                            photoDescription.PhotoId = model.Photo.Id;
-                            photoDescription.DescriptionId = updatedDescriptions.Find(m => m.Keyword.ToLower() == keyword.ToLower()).Id;
-                            _context.Add(photoDescription);
+                                PhotoDescription photoDescription = new PhotoDescription();
+                                photoDescription.PhotoId = model.Photo.Id;
+                                photoDescription.DescriptionId = description.Id;
+                                _context.Add(photoDescription);
+                            }
                         }
                     }
                     _context.Update(model.Photo);
