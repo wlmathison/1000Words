@@ -38,7 +38,8 @@ namespace _1000Words.Controllers
         // GET: Photos
         public async Task<IActionResult> Index()
         {
-            return View(await _context.Photos.ToListAsync());
+            var currentUser = await GetCurrentUserAsync();
+            return View(await _context.Photos.Where(p => p.UserId == currentUser.Id).ToListAsync());
         }
 
         // GET: Photos/Details/5
@@ -50,7 +51,8 @@ namespace _1000Words.Controllers
             }
 
             var photo = await _context.Photos
-                .FirstOrDefaultAsync(m => m.Id == id);
+                .FirstOrDefaultAsync(p => p.Id == id);
+
             if (photo == null)
             {
                 return NotFound();
