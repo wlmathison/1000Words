@@ -67,6 +67,10 @@ namespace _1000Words
 
             app.UseAuthentication();
 
+            //Accept All HTTP Request Methods from all origins
+            app.UseCors(builder =>
+                builder.AllowAnyHeader().AllowAnyOrigin().AllowAnyMethod());
+
             app.UseMvc(routes =>
             {
                 routes.MapRoute(

@@ -56,6 +56,12 @@ namespace _1000Words.Controllers
                 return NotFound();
             }
 
+            var currentUser = await GetCurrentUserAsync();
+            if (currentUser.Id != photo.UserId)
+            {
+                return NotFound();
+            }
+
             return View(photo);
         }
 
@@ -202,7 +208,26 @@ namespace _1000Words.Controllers
             {
                 return NotFound();
             }
-            return View(photo);
+
+            var currentUser = await GetCurrentUserAsync();
+            if (currentUser.Id != photo.UserId)
+            {
+                return NotFound();
+            }
+
+            //Return all PhotoDescription join tables where the photo id is included into a list
+            List<PhotoDescription> photoDescriptions = await _context.PhotoDescriptions.Where(pd => pd.PhotoId == id).ToListAsync();
+
+            //Return all descriptions where the description id is in the list of PhotoDescriptions into a list
+            List<Description> descriptions = await _context.Descriptions.Where(d => photoDescriptions.Any(pd => pd.DescriptionId == d.Id)).ToListAsync();
+
+            var model = new PhotoEditViewModel();
+
+            model.Photo = photo;
+            model.PhotoDescriptions = photoDescriptions;
+            model.Descriptions = descriptions;
+
+            return View(model);
         }
 
         // POST: Photos/Edit/5
@@ -210,9 +235,16 @@ namespace _1000Words.Controllers
         // more details see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Edit(int id, [Bind("Id,Date,Path,IsFavorite,UserId")] Photo photo)
+        public async Task<IActionResult> Edit(int id, PhotoEditViewModel model)
         {
-            if (id != photo.Id)
+            var currentUser = await GetCurrentUserAsync();
+
+            if (currentUser.Id != model.Photo.UserId)
+            {
+                return NotFound();
+            }
+
+            if (id != model.Photo.Id)
             {
                 return NotFound();
             }
@@ -221,12 +253,47 @@ namespace _1000Words.Controllers
             {
                 try
                 {
-                    _context.Update(photo);
+                    List<Description> descriptions = await _context.Descriptions.ToListAsync();
+
+                    List<PhotoDescription> existingPhotoDescriptions = await _context.PhotoDescriptions.Where(pd => pd.PhotoId == id).ToListAsync();
+
+                    //Remove all photoDescription joint tables on the current photo.
+                    existingPhotoDescriptions.ForEach(pd => _context.PhotoDescriptions.Remove(pd));
+
+                    if (model.CheckedKeywords != null)
+                    {
+                        foreach (string keyword in model.CheckedKeywords)
+                        {
+                            //If the keyword already exists in the Description database use that description id and add new joint table
+                            if (descriptions.Any(m => m.Keyword.ToLower() == keyword.ToLower()))
+                            {
+                                var existingDescription = descriptions.Find(m => m.Keyword.ToLower() == keyword.ToLower());
+
+                                PhotoDescription photoDescription = new PhotoDescription();
+                                photoDescription.PhotoId = model.Photo.Id;
+                                photoDescription.DescriptionId = existingDescription.Id;
+                                _context.Add(photoDescription);
+                            }
+                            //Else create a new description and add both the new description and joint table
+                            else
+                            {
+                                Description description = new Description();
+                                description.Keyword = keyword;
+                                _context.Add(description);
+
+                                PhotoDescription photoDescription = new PhotoDescription();
+                                photoDescription.PhotoId = model.Photo.Id;
+                                photoDescription.DescriptionId = description.Id;
+                                _context.Add(photoDescription);
+                            }
+                        }
+                    }
+                    _context.Update(model.Photo);
                     await _context.SaveChangesAsync();
                 }
                 catch (DbUpdateConcurrencyException)
                 {
-                    if (!PhotoExists(photo.Id))
+                    if (!PhotoExists(model.Photo.Id))
                     {
                         return NotFound();
                     }
@@ -237,7 +304,7 @@ namespace _1000Words.Controllers
                 }
                 return RedirectToAction(nameof(Index));
             }
-            return View(photo);
+            return View(model);
         }
 
         // GET: Photos/Delete/5
@@ -251,6 +318,12 @@ namespace _1000Words.Controllers
             var photo = await _context.Photos
                 .FirstOrDefaultAsync(m => m.Id == id);
             if (photo == null)
+            {
+                return NotFound();
+            }
+
+            var currentUser = await GetCurrentUserAsync();
+            if (currentUser.Id != photo.UserId)
             {
                 return NotFound();
             }
