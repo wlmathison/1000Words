@@ -7,6 +7,7 @@ using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
 using _1000Words.Data;
 using _1000Words.Models;
+using _1000Words.Models.ViewModels;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Identity;
 
@@ -42,8 +43,14 @@ namespace _1000Words.Controllers
                 return NotFound();
             }
 
+            var AlbumDetailsViewModel = new AlbumDetailsViewModel();
+
             var album = await _context.Albums
-                .FirstOrDefaultAsync(pa => pa.Id == id);
+                .FirstOrDefaultAsync(a => a.Id == id);
+
+            List<PhotoAlbum> photoAlbums = await _context.PhotoAlbums.Where(pa => pa.AlbumId == album.Id).ToListAsync();
+
+            List<Photo> photos = await _context.Photos.Where(p => photoAlbums.Any(pa => pa.PhotoId == p.Id)).ToListAsync();
 
             if (album == null)
             {
@@ -56,7 +63,10 @@ namespace _1000Words.Controllers
                 return NotFound();
             }
 
-            return View(album);
+            AlbumDetailsViewModel.Album = album;
+            AlbumDetailsViewModel.Photos = photos;
+
+            return View(AlbumDetailsViewModel);
         }
 
         // GET: Albums/Create
