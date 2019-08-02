@@ -12,5 +12,6 @@ namespace _1000Words.Models.ViewModels
         public Photo Photo { get; set; }
         public List<Description> Descriptions { get; set; }
         public List<PhotoDescription> PhotoDescriptions { get; set; }
+        public List<string> CheckedKeywords { get; set; }
     }
 }

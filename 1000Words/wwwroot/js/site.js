@@ -114,10 +114,14 @@ function stopRecording() {
     gumStream.getAudioTracks()[0].stop();
 
     //create the wav blob and pass it on to createDownloadLink
-    rec.exportWAV(createDownloadLink);
+    rec.exportWAV(CreateToggleSwitches);
 }
 
-function createDownloadLink(blob) {
+
+//Instantiating i to be used when creating custom switches in CreateToggleSwitches method.
+let i = 0;
+
+function CreateToggleSwitches(blob) {
 
     //create formData to include wav blob during fetch call
     var formData = new FormData();
@@ -143,27 +147,51 @@ function createDownloadLink(blob) {
             var nonDuplicateFilteredResults = filteredResults.filter((item, index) => filteredResults.indexOf(item) === index);
 
             nonDuplicateFilteredResults.forEach(r => {
-                var li = document.createElement('li');
-                li.textContent = r;
-                recordingsList.appendChild(li);
+                i++;
+                var div = document.createElement('div');
+                div.className = "custom-control custom-switch";
+
+                var input = document.createElement('input');
+                input.type = 'checkbox';
+                input.className = 'custom-control-input';
+                input.id = 'CustomSwitch' + i;
+                input.name = 'CheckedKeywords';
+                input.value = r;
+                input.checked = true;
+
+                var label = document.createElement('label');
+                label.className = 'custom-control-label';
+                label.textContent = r;
+                label.htmlFor = 'CustomSwitch' + i;
+
+                div.appendChild(input);
+                div.appendChild(label);
+                recordingsList.appendChild(div);
             });
-        });
 
 
-    //var url = URL.createObjectURL(blob);
-    //var au = document.createElement('audio');
-    //var li = document.createElement('li');
-    //var link = document.createElement('a');
-    ////add controls to the <audio> element 
-    //au.controls = true;
-    //au.src = url;
-    ////link the a element to the blob 
-    //link.href = url;
-    //link.download = new Date().toISOString() + '.wav';
-    //link.innerHTML = link.download;
-    ////add the new audio and a elements to the li element 
-    //li.appendChild(au);
-    //li.appendChild(link);
-    ////add the li element to the ordered list 
-    //recordingsList.appendChild(li);
+            //nonDuplicateFilteredResults.forEach(r => {
+            //    var li = document.createElement('li');
+            //    li.textContent = r;
+            //    recordingsList.appendChild(li);
+            //});
+
+            //var url = URL.createObjectURL(blob);
+            //var au = document.createElement('audio');
+            //var li = document.createElement('li');
+            //var link = document.createElement('a');
+            ////add controls to the <audio> element 
+            //au.controls = true;
+            //au.src = url;
+            ////link the a element to the blob 
+            //link.href = url;
+            //link.download = new Date().toISOString() + '.wav';
+            //link.innerHTML = link.download;
+            ////add the new audio and a elements to the li element 
+            //li.appendChild(au);
+            //li.appendChild(link);
+            ////add the li element to the ordered list 
+            //recordingsList.appendChild(li);
+        }
+        )
 }

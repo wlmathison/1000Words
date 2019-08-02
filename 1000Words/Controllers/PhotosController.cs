@@ -215,8 +215,10 @@ namespace _1000Words.Controllers
                 return NotFound();
             }
 
+            //Return all PhotoDescription join tables where the photo id is included into a list
             List<PhotoDescription> photoDescriptions = await _context.PhotoDescriptions.Where(pd => pd.PhotoId == id).ToListAsync();
 
+            //Return all descriptions where the description id is in the list of PhotoDescriptions into a list
             List<Description> descriptions = await _context.Descriptions.Where(d => photoDescriptions.Any(pd => pd.DescriptionId == d.Id)).ToListAsync();
 
             var model = new PhotoEditViewModel();
@@ -233,7 +235,7 @@ namespace _1000Words.Controllers
         // more details see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Edit(int id, [Bind("Id,Date,Path,IsFavorite,UserId")] PhotoEditViewModel model)
+        public async Task<IActionResult> Edit(int id, PhotoEditViewModel model)
         {
             var currentUser = await GetCurrentUserAsync();
 
@@ -251,6 +253,45 @@ namespace _1000Words.Controllers
             {
                 try
                 {
+                    List<Description> descriptions = await _context.Descriptions.ToListAsync();
+
+                    foreach (string keyword in model.CheckedKeywords)
+                    {
+                        if (model.Descriptions != null)
+                        {
+                            if (model.Descriptions.Any(m => m.Keyword.ToLower() == keyword.ToLower()))
+                            {
+                                break;
+                            }
+                            else if (descriptions.Any(m => m.Keyword.ToLower() == keyword.ToLower()))
+                            {
+                                var existingDescription = descriptions.Find(m => m.Keyword.ToLower() == keyword.ToLower());
+
+                                PhotoDescription photoDescription = new PhotoDescription();
+                                photoDescription.PhotoId = model.Photo.Id;
+                                photoDescription.DescriptionId = existingDescription.Id;
+                                _context.Add(photoDescription);
+                            }
+                            else
+                            {
+                                Description description = new Description();
+                                description.Keyword = keyword;
+                                _context.Add(description);
+                            }
+                        }
+                        else
+                        {
+                            Description description = new Description();
+                            description.Keyword = keyword;
+                            await _context.SaveChangesAsync();
+
+                            List<Description> updatedDescriptions = await _context.Descriptions.ToListAsync();
+                            PhotoDescription photoDescription = new PhotoDescription();
+                            photoDescription.PhotoId = model.Photo.Id;
+                            photoDescription.DescriptionId = updatedDescriptions.Find(m => m.Keyword.ToLower() == keyword.ToLower()).Id;
+                            _context.Add(photoDescription);
+                        }
+                    }
                     _context.Update(model.Photo);
                     await _context.SaveChangesAsync();
                 }
