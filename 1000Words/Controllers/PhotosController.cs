@@ -51,7 +51,8 @@ namespace _1000Words.Controllers
             }
 
             var photo = await _context.Photos
-                .FirstOrDefaultAsync(m => m.Id == id);
+                .FirstOrDefaultAsync(p => p.Id == id);
+
             if (photo == null)
             {
                 return NotFound();
