@@ -21,4 +21,9 @@
     <Folder Include="wwwroot\images\" />
   </ItemGroup>
 
+
+  <ItemGroup>
+    <None Include="wwwroot\js\navSearch.js" />
+  </ItemGroup>
+
 </Project>
