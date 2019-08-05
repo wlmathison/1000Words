@@ -9,8 +9,14 @@
 <p>
     <a asp-action="Create" class="btn btn-primary">Add Photo</a>
     <a asp-action="CreateMultiple" class="btn btn-primary">Add Multiple Photos</a>
-
 </p>
+
+@if (!Model.Any())
+{
+    <h4>
+        No results found.
+    </h4>
+}
 
 <div class="card-deck">
     @foreach (var item in Model)

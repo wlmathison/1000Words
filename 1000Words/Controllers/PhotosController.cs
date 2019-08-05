@@ -66,6 +66,7 @@ namespace _1000Words.Controllers
                         break;
 
                     case "3":
+                        applicationDbContext = photos.Where(p => p.Date.Value.ToString("yyyy-MM") == searchString);
                         break;
 
                     case "4":
