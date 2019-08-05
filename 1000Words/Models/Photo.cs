@@ -25,8 +25,10 @@ namespace _1000Words.Models
 
         public virtual ICollection<PhotoAlbum> PhotoAlbums { get; set; }
 
+        public virtual ICollection<PhotoDescription> PhotoDescriptions { get; set; }
+
         [NotMapped]
-        [Display(Name ="Date Taken")]
+        [Display(Name = "Date Taken")]
         public string FormattedDate
         {
             get
