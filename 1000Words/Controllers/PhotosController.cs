@@ -45,32 +45,41 @@ namespace _1000Words.Controllers
 
             if (!String.IsNullOrEmpty(searchString))
             {
-                var photos = _context.Photos.Where(p => p.UserId == currentUser.Id && p.Date != null);
-
                 switch (searchBy)
                 {
                     case "1":
                         var searchStringArray = searchString.Split(" ");
-                        if (searchStringArray.Length > 1)
+
+                        var userPhotos = _context.Photos.Where(p => p.UserId == currentUser.Id).Include(p => p.PhotoDescriptions).ThenInclude(pd => pd.Description);
+
+                        List<Photo> matchingPhotos = new List<Photo>();
+
+                        foreach (Photo photo in userPhotos)
                         {
-                            break;
+                            var descriptions = new List<string>();
+                            foreach (PhotoDescription pd in photo.PhotoDescriptions)
+                            {
+                                descriptions.Add(pd.Description.Keyword);
+                            }
+
+                            if (searchStringArray.All(s => descriptions.Contains(s)))
+                            {
+                                matchingPhotos.Add(photo);
+                            }
                         }
-                        else
-                        {
-                            applicationDbContext = _context.Photos.Where(p => p.UserId == currentUser.Id);
-                            break;
-                        };
+
+                        return View(matchingPhotos);
 
                     case "2":
-                        applicationDbContext = photos.Where(p => p.Date.Value.ToString("yyyy-MM-dd") == searchString);
+                        applicationDbContext = _context.Photos.Where(p => p.UserId == currentUser.Id && p.Date != null && p.Date.Value.ToString("yyyy-MM-dd") == searchString);
                         break;
 
                     case "3":
-                        applicationDbContext = photos.Where(p => p.Date.Value.ToString("yyyy-MM") == searchString);
+                        applicationDbContext = _context.Photos.Where(p => p.UserId == currentUser.Id && p.Date != null && p.Date.Value.ToString("yyyy-MM") == searchString);
                         break;
 
                     case "4":
-                        applicationDbContext = photos.Where(p => p.Date.Value.ToString("yyyy") == searchString);
+                        applicationDbContext = _context.Photos.Where(p => p.UserId == currentUser.Id && p.Date != null && p.Date.Value.ToString("yyyy") == searchString);
                         break;
                 }
             }
@@ -316,7 +325,7 @@ namespace _1000Words.Controllers
                             else
                             {
                                 Description description = new Description();
-                                description.Keyword = keyword;
+                                description.Keyword = keyword.ToLower();
                                 _context.Add(description);
 
                                 PhotoDescription photoDescription = new PhotoDescription();

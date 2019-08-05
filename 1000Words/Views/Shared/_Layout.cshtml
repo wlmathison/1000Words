@@ -44,8 +44,7 @@
                                 <form asp-controller="Photos" asp-action="Index" method="get" class="input-group input-group-sm mb-3">
                                     <div class="input-group-prepend">
                                         <select class="custom-select custom-select-sm" id="inputGroupSelect" name="searchBy" value="@ViewData["searchBy"]">
-                                            <option selected>Search by...</option>
-                                            <option value="1">Search by keywords</option>
+                                            <option value="1" selected>Search by keywords</option>
                                             <option value="2">Search by day</option>
                                             <option value="3">Search by month</option>
                                             <option value="4">Search by year</option>
