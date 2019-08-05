@@ -34,12 +34,47 @@ namespace _1000Words.Controllers
 
         private Task<ApplicationUser> GetCurrentUserAsync() => _userManager.GetUserAsync(HttpContext.User);
 
-
         // GET: Photos
-        public async Task<IActionResult> Index()
+        public async Task<IActionResult> Index(string searchString, string searchBy)
         {
+            ViewData["CurrentFilter"] = searchString;
+            ViewData["searchBy"] = searchBy;
+
             var currentUser = await GetCurrentUserAsync();
-            return View(await _context.Photos.Where(p => p.UserId == currentUser.Id).ToListAsync());
+            var applicationDbContext = _context.Photos.Where(p => p.UserId == currentUser.Id);
+
+            if (!String.IsNullOrEmpty(searchString))
+            {
+                var photos = _context.Photos.Where(p => p.UserId == currentUser.Id && p.Date != null);
+
+                switch (searchBy)
+                {
+                    case "1":
+                        var searchStringArray = searchString.Split(" ");
+                        if (searchStringArray.Length > 1)
+                        {
+                            break;
+                        }
+                        else
+                        {
+                            applicationDbContext = _context.Photos.Where(p => p.UserId == currentUser.Id);
+                            break;
+                        };
+
+                    case "2":
+                        applicationDbContext = photos.Where(p => p.Date.Value.ToString("yyyy-MM-dd") == searchString);
+                        break;
+
+                    case "3":
+                        break;
+
+                    case "4":
+                        applicationDbContext = photos.Where(p => p.Date.Value.ToString("yyyy") == searchString);
+                        break;
+                }
+            }
+
+            return View(await applicationDbContext.ToListAsync());
         }
 
         // GET: Photos/Details/5

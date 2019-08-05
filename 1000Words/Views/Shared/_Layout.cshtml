@@ -41,21 +41,20 @@
                                 <a class="navbar-brand" asp-area="" asp-controller="Albums" asp-action="Index">Albums</a>
                             </li>
                             <li>
-                                <form asp-controller="Photos" asp-action="Index" method="get">
-                                    <div class="input-group input-group-sm mb-3">
-                                        <div class="input-group-prepend">
-                                            <button class="btn btn-outline-secondary dropdown-toggle" type="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false" id="dropdown-title">Search by:</button>
-                                            <div class="dropdown-menu" id="search-dropdown-menu">
-                                                <a class="dropdown-item" name="search-dropdown-item">Keywords</a>
-                                                <a class="dropdown-item" name="search-dropdown-item">Day</a>
-                                                <a class="dropdown-item" name="search-dropdown-item">Month</a>
-                                                <a class="dropdown-item" name="search-dropdown-item">Year</a>
-                                            </div>
-                                        </div>
-                                        <input type="text" class="form-control" placeholder="Enter keywords" name="searchString" id="navSearchInput">
-                                        <div class="input-group-append">
-                                            <button class="btn btn-secondary btn-sm" type="submit">Search</button>
-                                        </div>
+                                <form asp-controller="Photos" asp-action="Index" method="get" class="input-group input-group-sm mb-3">
+                                    <div class="input-group-prepend">
+                                        <select class="custom-select custom-select-sm" id="inputGroupSelect" name="searchBy" value="@ViewData["searchBy"]">
+                                            <option selected>Search by...</option>
+                                            <option value="1">Search by keywords</option>
+                                            <option value="2">Search by day</option>
+                                            <option value="3">Search by month</option>
+                                            <option value="4">Search by year</option>
+
+                                        </select>
+                                    </div>
+                                    <input type="text" class="form-control" placeholder="Enter keywords" name="searchString" id="navSearchInput" value="@ViewData["CurrentFilter"]">
+                                    <div class="input-group-append">
+                                        <button class="btn btn-secondary btn-sm" type="submit">Search</button>
                                     </div>
                                 </form>
                             </li>

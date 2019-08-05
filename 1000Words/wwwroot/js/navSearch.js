@@ -1,40 +1,30 @@
-﻿const dropdownItems = document.getElementsByName("search-dropdown-item");
-const navSearchBar = document.getElementById("navSearchInput");
-const dropdownTitle = document.getElementById("dropdown-title");
+﻿const navSearchBar = document.getElementById("navSearchInput");
+const inputGroupSelect = document.getElementById("inputGroupSelect");
 
-dropdownItems.forEach(d => d.addEventListener("click", () => selectSearch(d)));
-function selectSearch(d) {
-    switch (d.text) {
-        case "Keywords":
-            dropdownTitle.textContent = "Search by keywords";
+inputGroupSelect.addEventListener("click", selectSearch);
+
+function selectSearch() {
+    switch (inputGroupSelect.value) {
+        case "1":
             navSearchBar.type = "text";
             navSearchBar.value = "";
             navSearchBar.placeholder = "Enter keywords";
-            navSearchBar.name = "searchString";
-            //navSearchBar.value = "@ViewData['currentFilter']";
             break;
 
-        case "Day":
-            dropdownTitle.textContent = "Search by day";
+        case "2":
             navSearchBar.type = "date";
-            navSearchBar.name = "searchDay";
-            //navSearchBar.value = "@ViewData['currentFilter']";
+            navSearchBar.format = "mm/dd/yyyy";
             break;
 
-        case "Month":
-            dropdownTitle.textContent = "Search by month";
+        case "3":
             navSearchBar.type = "month";
-            navSearchBar.name = "searchMonth";
-            //navSearchBar.value = "@ViewData['currentFilter']";
             break;
 
-        case "Year":
-            dropdownTitle.textContent = "Search by year";
+        case "4":
             navSearchBar.type = "number";
-            navSearchBar.name = "searchYear";
+            navSearchBar.placeholder = "";
             navSearchBar.min = 1900;
             navSearchBar.max = new Date().getFullYear();
-            //navSearchBar.value = "@ViewData['currentFilter']";
             break;
     }
 }
