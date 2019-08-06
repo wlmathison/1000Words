@@ -53,12 +53,12 @@ namespace _1000Words.Controllers
         }
 
         // GET: PhotoAlbums/Create
-        public async Task<IActionResult> Create()
+        public async Task<IActionResult> Create(int? id)
         {
             var currentUser = await GetCurrentUserAsync();
 
             ViewData["AlbumId"] = new SelectList(_context.Albums.Where(a => a.UserId == currentUser.Id).ToList(), "Id", "Name");
-            ViewData["PhotoId"] = new SelectList(_context.Photos, "Id", "Path");
+            ViewData["PhotoId"] = id;
             return View();
         }
 
@@ -67,16 +67,16 @@ namespace _1000Words.Controllers
         // more details see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Create([Bind("Id,AlbumId,PhotoId")] PhotoAlbum photoAlbum)
+        public async Task<IActionResult> Create([Bind("AlbumId,PhotoId")] PhotoAlbum photoAlbum)
         {
             if (ModelState.IsValid)
             {
                 _context.Add(photoAlbum);
                 await _context.SaveChangesAsync();
-                return RedirectToAction(nameof(Index));
+                return RedirectToAction("Details", "Albums", new { id = photoAlbum.AlbumId });
             }
             ViewData["AlbumId"] = new SelectList(_context.Albums, "Id", "Name", photoAlbum.AlbumId);
-            ViewData["PhotoId"] = new SelectList(_context.Photos, "Id", "Path", photoAlbum.PhotoId);
+            ViewData["PhotoId"] = photoAlbum.PhotoId;
             return View(photoAlbum);
         }
 
