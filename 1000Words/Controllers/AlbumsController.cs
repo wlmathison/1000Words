@@ -157,9 +157,9 @@ namespace _1000Words.Controllers
                 return NotFound();
             }
 
-            var album = await _context.Albums
-                .Include(a => a.User)
-                .FirstOrDefaultAsync(m => m.Id == id);
+            var currentUser = await GetCurrentUserAsync();
+            var album = await _context.Albums.Where(a => a.UserId == currentUser.Id).FirstOrDefaultAsync(a => a.Id == id);
+
             if (album == null)
             {
                 return NotFound();
@@ -174,7 +174,16 @@ namespace _1000Words.Controllers
         public async Task<IActionResult> DeleteConfirmed(int id)
         {
             var album = await _context.Albums.FindAsync(id);
+
+            //Find all join tables for the album to be deleted
+            var photoAlbums = await _context.PhotoAlbums.Where(pa => pa.AlbumId == id).ToListAsync();
+
+            //Delete each join table for the current album
+            photoAlbums.ForEach(pa => _context.PhotoAlbums.Remove(pa));
+
+            //Delete the current album
             _context.Albums.Remove(album);
+
             await _context.SaveChangesAsync();
             return RedirectToAction(nameof(Index));
         }

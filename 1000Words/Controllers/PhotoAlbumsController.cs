@@ -69,10 +69,17 @@ namespace _1000Words.Controllers
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> Create([Bind("AlbumId,PhotoId")] PhotoAlbum photoAlbum)
         {
+            List<PhotoAlbum> photoAlbums = await _context.PhotoAlbums.Where(pa => pa.AlbumId == photoAlbum.AlbumId).ToListAsync();
+            List<int> photoIds = photoAlbums.Select(pa => pa.PhotoId).ToList();
+
             if (ModelState.IsValid)
             {
-                _context.Add(photoAlbum);
-                await _context.SaveChangesAsync();
+                if (!photoIds.Contains(photoAlbum.PhotoId))
+                {
+                    _context.Add(photoAlbum);
+                    await _context.SaveChangesAsync();
+                }
+
                 return RedirectToAction("Details", "Albums", new { id = photoAlbum.AlbumId });
             }
             ViewData["AlbumId"] = new SelectList(_context.Albums, "Id", "Name", photoAlbum.AlbumId);
