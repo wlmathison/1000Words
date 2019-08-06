@@ -8,6 +8,7 @@ using Microsoft.EntityFrameworkCore;
 using _1000Words.Data;
 using _1000Words.Models;
 using Microsoft.AspNetCore.Identity;
+using _1000Words.Models.ViewModels;
 
 namespace _1000Words.Controllers
 {
@@ -80,12 +81,44 @@ namespace _1000Words.Controllers
         }
 
         // GET: PhotoAlbums/CreateMultiple
-        public async Task<IActionResult> CreateMultiple()
+        public async Task<IActionResult> CreateMultiple(List<Photo> photos)
         {
             var currentUser = await GetCurrentUserAsync();
-
+            PhotoAlbumCreateMultipleViewModel model = new PhotoAlbumCreateMultipleViewModel();
+            model.Photos = photos;
             ViewData["AlbumId"] = new SelectList(_context.Albums.Where(a => a.UserId == currentUser.Id).ToList(), "Id", "Name");
-            return View();
+            return View(model);
+        }
+
+        // POST: PhotoAlbums/CreateMultiple
+        // To protect from overposting attacks, please enable the specific properties you want to bind to, for 
+        // more details see http://go.microsoft.com/fwlink/?LinkId=317598.
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public async Task<IActionResult> CreateMultiple(PhotoAlbumCreateMultipleViewModel model)
+        {
+
+            if (model.Photos.Count != 0 && model.PhotoAlbum.AlbumId != 0)
+            {
+                List<PhotoAlbum> photoAlbums = await _context.PhotoAlbums.Where(pa => pa.AlbumId == model.PhotoAlbum.AlbumId).ToListAsync();
+                List<int> photoIds = photoAlbums.Select(pa => pa.PhotoId).ToList();
+
+                foreach (var item in model.Photos)
+                {
+                    if (item.Id != 0 && !photoIds.Contains(item.Id))
+                    {
+                        PhotoAlbum photoAlbum = new PhotoAlbum();
+                        photoAlbum.PhotoId = item.Id;
+                        photoAlbum.AlbumId = model.PhotoAlbum.AlbumId;
+                        _context.Add(photoAlbum);
+                    }
+                }
+
+                await _context.SaveChangesAsync();
+                return RedirectToAction("Details", "Albums", new { id = model.PhotoAlbum.AlbumId });
+            }
+            ViewData["AlbumId"] = new SelectList(_context.Albums, "Id", "Name", model.PhotoAlbum.AlbumId);
+            return View(model);
         }
 
         // GET: PhotoAlbums/Edit/5

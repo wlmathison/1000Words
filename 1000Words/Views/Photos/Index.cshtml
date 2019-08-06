@@ -6,11 +6,21 @@
 
 <h1>Photos</h1>
 
-<p>
-    <a asp-action="Create" class="btn btn-primary">Add Photo</a>
-    <a asp-action="CreateMultiple" class="btn btn-primary">Add Multiple Photos</a>
-    <a asp-controller="PhotoAlbums" asp-action="CreateMultiple" class="btn btn-primary">Add All Photos to an Album</a>
-</p>
+<div>
+    <p>
+        <a asp-action="Create" class="btn btn-primary">Add Photo</a>
+        <a asp-action="CreateMultiple" class="btn btn-primary">Add Multiple Photos</a>
+    </p>
+    <form asp-controller="PhotoAlbums" asp-action="CreateMultiple" method="get">
+        @for (int i = 0; i < Model.Count(); i++)
+        {
+            <input type="hidden" asp-for="@Model.ToList()[i].Id"/>
+        }
+        <div>
+            <input type="submit" value="Add All Photos to an Existing Album" class="btn btn-primary" />
+        </div>
+    </form>
+</div>
 
 @if (!Model.Any())
 {
