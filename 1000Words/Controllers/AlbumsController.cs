@@ -43,14 +43,8 @@ namespace _1000Words.Controllers
                 return NotFound();
             }
 
-            var AlbumDetailsViewModel = new AlbumDetailsViewModel();
-
             var album = await _context.Albums
                 .FirstOrDefaultAsync(a => a.Id == id);
-
-            List<PhotoAlbum> photoAlbums = await _context.PhotoAlbums.Where(pa => pa.AlbumId == album.Id).ToListAsync();
-
-            List<Photo> photos = await _context.Photos.Where(p => photoAlbums.Any(pa => pa.PhotoId == p.Id)).ToListAsync();
 
             if (album == null)
             {
@@ -62,6 +56,12 @@ namespace _1000Words.Controllers
             {
                 return NotFound();
             }
+
+            var AlbumDetailsViewModel = new AlbumDetailsViewModel();
+
+            List<PhotoAlbum> photoAlbums = await _context.PhotoAlbums.Where(pa => pa.AlbumId == album.Id).ToListAsync();
+
+            List<Photo> photos = await _context.Photos.Where(p => photoAlbums.Any(pa => pa.PhotoId == p.Id)).ToListAsync();
 
             AlbumDetailsViewModel.Album = album;
             AlbumDetailsViewModel.Photos = photos;

@@ -48,8 +48,10 @@ namespace _1000Words.Controllers
                 switch (searchBy)
                 {
                     case "1":
+                        //Create a list of individual words entered by user
                         var searchStringArray = searchString.Split(" ");
 
+                        //Expand photo object to include list of photodescriptions and upon those descriptions
                         var userPhotos = _context.Photos.Where(p => p.UserId == currentUser.Id).Include(p => p.PhotoDescriptions).ThenInclude(pd => pd.Description);
 
                         List<Photo> matchingPhotos = new List<Photo>();
@@ -62,8 +64,10 @@ namespace _1000Words.Controllers
                                 descriptions.Add(pd.Description.Keyword);
                             }
 
+                            //If the list of search strings are all contained within the list of descriptions on the photo
                             if (searchStringArray.All(s => descriptions.Contains(s)))
                             {
+                                //Add photo to list of matching photos to return
                                 matchingPhotos.Add(photo);
                             }
                         }
@@ -71,14 +75,17 @@ namespace _1000Words.Controllers
                         return View(matchingPhotos);
 
                     case "2":
+                        //Return photos whose date match user input
                         applicationDbContext = _context.Photos.Where(p => p.UserId == currentUser.Id && p.Date != null && p.Date.Value.ToString("yyyy-MM-dd") == searchString);
                         break;
 
                     case "3":
+                        //Return photos whose month and year match user input
                         applicationDbContext = _context.Photos.Where(p => p.UserId == currentUser.Id && p.Date != null && p.Date.Value.ToString("yyyy-MM") == searchString);
                         break;
 
                     case "4":
+                        //Return photos whose year match user input
                         applicationDbContext = _context.Photos.Where(p => p.UserId == currentUser.Id && p.Date != null && p.Date.Value.ToString("yyyy") == searchString);
                         break;
                 }

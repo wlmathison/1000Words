@@ -9,6 +9,7 @@
 <p>
     <a asp-action="Create" class="btn btn-primary">Add Photo</a>
     <a asp-action="CreateMultiple" class="btn btn-primary">Add Multiple Photos</a>
+    <a asp-controller="PhotoAlbums" asp-action="CreateMultiple" class="btn btn-primary">Add All Photos to an Album</a>
 </p>
 
 @if (!Model.Any())
@@ -28,6 +29,8 @@
                 <img class="card-img-top imageThumbnail" src="@photoPath"
                      asp-append-version="true" />
                 <div class="overlay">
+                    <input type="checkbox" class="photo-checkbox" id="checkbox-@item.Id" />
+                    <br />
                     <a asp-controller="Photos" asp-action="Details" asp-route-id="@item.Id"
                        class="btn btn-sm btn-light m-1 mt-5">Details</a>
                     <br />

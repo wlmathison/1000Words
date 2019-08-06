@@ -1,7 +1,36 @@
-﻿@{
+﻿@model IEnumerable<_1000Words.Models.Photo>
+@using Microsoft.AspNetCore.Identity
+@inject SignInManager<ApplicationUser> SignInManager
+
+
+@{
     ViewData["Title"] = "Home Page";
 }
 
 <div class="text-center">
-    <h1 class="display-4">Welcome</h1>
+    @if (SignInManager.IsSignedIn(User))
+    {
+        <h1 class="display-4">Welcome back @User.Identity.Name</h1>
+        <br />
+
+        <div class="text-center">
+            @foreach (var item in Model.OrderBy(x => Guid.NewGuid()).Take(1))
+            {
+                var photoPath = "~/images/" + (item.Path ?? "noimage.jpg");
+
+                <div class="m-2">
+                    <img class="card-img-top imageThumbnail" src="@photoPath"
+                         asp-append-version="true" />
+                </div>
+            }
+        </div>
+    }
+    else
+    {
+        <h1 class="display-4">Welcome to 1000Words!</h1>
+
+    }
+
 </div>
+
+
