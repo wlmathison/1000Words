@@ -15,7 +15,10 @@ namespace _1000Words.Controllers
         [HttpPost]
         public async Task<IActionResult> PostWav(IFormFile audio)
         {
+            // Uploading audio file to cloud Speech-to-Text API
             GoogleSpeech.UploadAudio(audio);
+
+            // Returning keywords from API
             return Ok(GoogleSpeech.Keywords);
         }
     }

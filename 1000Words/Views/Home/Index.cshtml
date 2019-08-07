@@ -8,6 +8,7 @@
 }
 
 <div class="text-center">
+    @* If user is signed in *@
     @if (SignInManager.IsSignedIn(User))
     {
         <h1 class="display-4">Welcome back @User.Identity.Name</h1>

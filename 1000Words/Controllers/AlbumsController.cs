@@ -59,10 +59,13 @@ namespace _1000Words.Controllers
 
             var AlbumDetailsViewModel = new AlbumDetailsViewModel();
 
+            // Get a list of all join tables for the current album
             List<PhotoAlbum> photoAlbums = await _context.PhotoAlbums.Where(pa => pa.AlbumId == album.Id).ToListAsync();
 
+            // Create a list of all photos on the join tables
             List<Photo> photos = await _context.Photos.Where(p => photoAlbums.Any(pa => pa.PhotoId == p.Id)).ToListAsync();
 
+            // Add the album and list of photos to the view model
             AlbumDetailsViewModel.Album = album;
             AlbumDetailsViewModel.Photos = photos;
 
@@ -104,15 +107,10 @@ namespace _1000Words.Controllers
                 return NotFound();
             }
 
-            var album = await _context.Albums.FindAsync(id);
+            var currentUser = await GetCurrentUserAsync();
+            var album = await _context.Albums.Where(a => a.UserId == currentUser.Id).FirstOrDefaultAsync(a => a.Id == id);
 
             if (album == null)
-            {
-                return NotFound();
-            }
-
-            var currentUser = await GetCurrentUserAsync();
-            if (currentUser.Id != album.UserId)
             {
                 return NotFound();
             }
@@ -189,13 +187,13 @@ namespace _1000Words.Controllers
         {
             var album = await _context.Albums.FindAsync(id);
 
-            //Find all join tables for the album to be deleted
+            // Find all join tables for the album to be deleted
             var photoAlbums = await _context.PhotoAlbums.Where(pa => pa.AlbumId == id).ToListAsync();
 
-            //Delete each join table for the current album
+            // Delete each join table for the current album
             photoAlbums.ForEach(pa => _context.PhotoAlbums.Remove(pa));
 
-            //Delete the current album
+            // Delete the current album
             _context.Albums.Remove(album);
 
             await _context.SaveChangesAsync();

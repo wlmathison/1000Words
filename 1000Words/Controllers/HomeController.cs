@@ -28,6 +28,7 @@ namespace _1000Words.Controllers
 
             if (currentUser != null)
             {
+                // Get a list of photos for the current user
                 var applicationDbContext = _context.Photos.Where(p => p.UserId == currentUser.Id);
                 return View(applicationDbContext.ToList());
             }
@@ -36,11 +37,6 @@ namespace _1000Words.Controllers
                 return View();
             }
 
-        }
-
-        public IActionResult Privacy()
-        {
-            return View();
         }
 
         [ResponseCache(Duration = 0, Location = ResponseCacheLocation.None, NoStore = true)]

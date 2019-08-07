@@ -9,9 +9,11 @@ using _1000Words.Data;
 using _1000Words.Models;
 using Microsoft.AspNetCore.Identity;
 using _1000Words.Models.ViewModels;
+using Microsoft.AspNetCore.Authorization;
 
 namespace _1000Words.Controllers
 {
+    [Authorize]
     public class PhotoAlbumsController : Controller
     {
         private readonly ApplicationDbContext _context;
@@ -25,12 +27,6 @@ namespace _1000Words.Controllers
             _userManager = userManager;
         }
 
-        // GET: PhotoAlbums
-        public async Task<IActionResult> Index()
-        {
-            var applicationDbContext = _context.PhotoAlbums.Include(p => p.Album).Include(p => p.Photo);
-            return View(await applicationDbContext.ToListAsync());
-        }
 
         // GET: PhotoAlbums/Create
         public async Task<IActionResult> Create(int? id)
@@ -60,6 +56,7 @@ namespace _1000Words.Controllers
                     await _context.SaveChangesAsync();
                 }
 
+                // Redirect to details for album photo is being placed in
                 return RedirectToAction("Details", "Albums", new { id = photoAlbum.AlbumId });
             }
             ViewData["AlbumId"] = new SelectList(_context.Albums, "Id", "Name", photoAlbum.AlbumId);
@@ -102,87 +99,12 @@ namespace _1000Words.Controllers
                 }
 
                 await _context.SaveChangesAsync();
+
+                // Redirect to details for album photos are being placed in
                 return RedirectToAction("Details", "Albums", new { id = model.PhotoAlbum.AlbumId });
             }
             ViewData["AlbumId"] = new SelectList(_context.Albums, "Id", "Name", model.PhotoAlbum.AlbumId);
             return View(model);
-        }
-
-        // GET: PhotoAlbums/Edit/5
-        public async Task<IActionResult> Edit(int? id)
-        {
-            if (id == null)
-            {
-                return NotFound();
-            }
-
-            var photoAlbum = await _context.PhotoAlbums.FindAsync(id);
-            if (photoAlbum == null)
-            {
-                return NotFound();
-            }
-            var currentUser = await GetCurrentUserAsync();
-
-            ViewData["AlbumId"] = new SelectList(_context.Albums.Where(a => a.UserId == currentUser.Id).ToList(), "Id", "Name", photoAlbum.AlbumId);
-            ViewData["PhotoId"] = new SelectList(_context.Photos, "Id", "Path", photoAlbum.PhotoId);
-            return View(photoAlbum);
-        }
-
-        // POST: PhotoAlbums/Edit/5
-        // To protect from overposting attacks, please enable the specific properties you want to bind to, for 
-        // more details see http://go.microsoft.com/fwlink/?LinkId=317598.
-        [HttpPost]
-        [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Edit(int id, [Bind("Id,AlbumId,PhotoId")] PhotoAlbum photoAlbum)
-        {
-            if (id != photoAlbum.Id)
-            {
-                return NotFound();
-            }
-
-            if (ModelState.IsValid)
-            {
-                try
-                {
-                    _context.Update(photoAlbum);
-                    await _context.SaveChangesAsync();
-                }
-                catch (DbUpdateConcurrencyException)
-                {
-                    if (!PhotoAlbumExists(photoAlbum.Id))
-                    {
-                        return NotFound();
-                    }
-                    else
-                    {
-                        throw;
-                    }
-                }
-                return RedirectToAction(nameof(Index));
-            }
-            ViewData["AlbumId"] = new SelectList(_context.Albums, "Id", "Name", photoAlbum.AlbumId);
-            ViewData["PhotoId"] = new SelectList(_context.Photos, "Id", "Path", photoAlbum.PhotoId);
-            return View(photoAlbum);
-        }
-
-        // GET: PhotoAlbums/Delete/5
-        public async Task<IActionResult> Delete(int? id)
-        {
-            if (id == null)
-            {
-                return NotFound();
-            }
-
-            var photoAlbum = await _context.PhotoAlbums
-                .Include(p => p.Album)
-                .Include(p => p.Photo)
-                .FirstOrDefaultAsync(m => m.Id == id);
-            if (photoAlbum == null)
-            {
-                return NotFound();
-            }
-
-            return View(photoAlbum);
         }
 
         // POST: PhotoAlbums/Delete/5
@@ -193,12 +115,10 @@ namespace _1000Words.Controllers
             var photoAlbum = await _context.PhotoAlbums.FindAsync(id);
             _context.PhotoAlbums.Remove(photoAlbum);
             await _context.SaveChangesAsync();
+
+            // Redirect to album photo was deleted from
             return RedirectToAction("Edit", "Albums", new { id = photoAlbum.AlbumId });
         }
 
-        private bool PhotoAlbumExists(int id)
-        {
-            return _context.PhotoAlbums.Any(e => e.Id == id);
-        }
     }
 }

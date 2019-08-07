@@ -48,10 +48,10 @@ namespace _1000Words.Controllers
                 switch (searchBy)
                 {
                     case "1":
-                        //Create a list of individual words entered by user
+                        // Create a list of individual words entered by user
                         var searchStringArray = searchString.Split(" ");
 
-                        //Expand photo object to include list of photodescriptions and upon those descriptions
+                        // Expand photo object to include list of photodescriptions and upon those descriptions
                         var userPhotos = _context.Photos.Where(p => p.UserId == currentUser.Id).Include(p => p.PhotoDescriptions).ThenInclude(pd => pd.Description);
 
                         List<Photo> matchingPhotos = new List<Photo>();
@@ -64,10 +64,10 @@ namespace _1000Words.Controllers
                                 descriptions.Add(pd.Description.Keyword);
                             }
 
-                            //If the list of search strings are all contained within the list of descriptions on the photo
+                            // If the list of search strings are all contained within the list of descriptions on the photo
                             if (searchStringArray.All(s => descriptions.Contains(s)))
                             {
-                                //Add photo to list of matching photos to return
+                                // Add photo to list of matching photos to return
                                 matchingPhotos.Add(photo);
                             }
                         }
@@ -75,17 +75,17 @@ namespace _1000Words.Controllers
                         return View(matchingPhotos);
 
                     case "2":
-                        //Return photos whose date match user input
+                        // Return photos whose date match user input
                         applicationDbContext = _context.Photos.Where(p => p.UserId == currentUser.Id && p.Date != null && p.Date.Value.ToString("yyyy-MM-dd") == searchString);
                         break;
 
                     case "3":
-                        //Return photos whose month and year match user input
+                        // Return photos whose month and year match user input
                         applicationDbContext = _context.Photos.Where(p => p.UserId == currentUser.Id && p.Date != null && p.Date.Value.ToString("yyyy-MM") == searchString);
                         break;
 
                     case "4":
-                        //Return photos whose year match user input
+                        // Return photos whose year match user input
                         applicationDbContext = _context.Photos.Where(p => p.UserId == currentUser.Id && p.Date != null && p.Date.Value.ToString("yyyy") == searchString);
                         break;
                 }
@@ -130,7 +130,7 @@ namespace _1000Words.Controllers
         // more details see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Create([Bind("Id,Date,Path,IsFavorite,UserId,Photo")] PhotoCreateViewModel model)
+        public async Task<IActionResult> Create([Bind("Id,Date,Path,UserId,Photo")] PhotoCreateViewModel model)
         {
             if (ModelState.IsValid)
             {
@@ -179,6 +179,8 @@ namespace _1000Words.Controllers
 
                 _context.Add(photo);
                 await _context.SaveChangesAsync();
+
+                // Redirect to edit view for photo being created
                 return RedirectToAction("Edit", new { id = photo.Id });
             }
             return View(model);
@@ -195,7 +197,7 @@ namespace _1000Words.Controllers
         // more details see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> CreateMultiple([Bind("Id,Date,Path,IsFavorite,UserId,Photo,Photos")] PhotoCreateMultipleViewModel model)
+        public async Task<IActionResult> CreateMultiple([Bind("Id,Date,Path,UserId,Photo,Photos")] PhotoCreateMultipleViewModel model)
         {
             if (ModelState.IsValid)
             {
@@ -241,7 +243,6 @@ namespace _1000Words.Controllers
                         _context.Add(photo);
                         await _context.SaveChangesAsync();
                     }
-
                 }
 
                 return RedirectToAction(nameof(Index));
@@ -269,10 +270,10 @@ namespace _1000Words.Controllers
                 return NotFound();
             }
 
-            //Return all PhotoDescription join tables where the photo id is included into a list
+            // Return all PhotoDescription join tables where the photo id is included into a list
             List<PhotoDescription> photoDescriptions = await _context.PhotoDescriptions.Where(pd => pd.PhotoId == id).ToListAsync();
 
-            //Return all descriptions where the description id is in the list of PhotoDescriptions into a list
+            // Return all descriptions where the description id is in the list of PhotoDescriptions into a list
             List<Description> descriptions = await _context.Descriptions.Where(d => photoDescriptions.Any(pd => pd.DescriptionId == d.Id)).ToListAsync();
 
             var model = new PhotoEditViewModel();
@@ -311,14 +312,14 @@ namespace _1000Words.Controllers
 
                     List<PhotoDescription> existingPhotoDescriptions = await _context.PhotoDescriptions.Where(pd => pd.PhotoId == id).ToListAsync();
 
-                    //Remove all photoDescription joint tables on the current photo.
+                    // Remove all photoDescription joint tables on the current photo.
                     existingPhotoDescriptions.ForEach(pd => _context.PhotoDescriptions.Remove(pd));
 
                     if (model.CheckedKeywords != null)
                     {
                         foreach (string keyword in model.CheckedKeywords)
                         {
-                            //If the keyword already exists in the Description database use that description id and add new joint table
+                            // If the keyword already exists in the Description database use that description id and add new joint table
                             if (descriptions.Any(m => m.Keyword.ToLower() == keyword.ToLower()))
                             {
                                 var existingDescription = descriptions.Find(m => m.Keyword.ToLower() == keyword.ToLower());
@@ -328,7 +329,7 @@ namespace _1000Words.Controllers
                                 photoDescription.DescriptionId = existingDescription.Id;
                                 _context.Add(photoDescription);
                             }
-                            //Else create a new description and add both the new description and joint table
+                            // Else create a new description and add both the new description and joint table
                             else
                             {
                                 Description description = new Description();
@@ -390,28 +391,28 @@ namespace _1000Words.Controllers
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> DeleteConfirmed(int id)
         {
-            //Find all photo album join tables for the photo to be deleted
+            // Find all photo album join tables for the photo to be deleted
             var photoAlbums = await _context.PhotoAlbums.Where(pa => pa.PhotoId == id).ToListAsync();
 
-            //Delete each photo album join table for the current photo
+            // Delete each photo album join table for the current photo
             photoAlbums.ForEach(pa => _context.PhotoAlbums.Remove(pa));
 
-            //Find all photo description join tables for the photo to be deleted
+            // Find all photo description join tables for the photo to be deleted
             var photoDescriptions = await _context.PhotoDescriptions.Where(pd => pd.PhotoId == id).ToListAsync();
 
-            //Delete each photo description join table for the current photo
+            // Delete each photo description join table for the current photo
             photoDescriptions.ForEach(pd => _context.PhotoDescriptions.Remove(pd));
 
-            //Find and delete photo
+            // Find and delete photo
             var photo = await _context.Photos.FindAsync(id);
             _context.Photos.Remove(photo);
             await _context.SaveChangesAsync();
-
-            //Geting path of image being deleted from the database
+ 
+            // Geting path of image being deleted from the database
             string uploadsFolder = Path.Combine(hostingEnvironment.WebRootPath, "images");
             string filePath = Path.Combine(uploadsFolder, photo.Path);
 
-            //Deleting image from wwwroot/image folder if it exists
+            // Deleting image from wwwroot/image folder if it exists
             if (System.IO.File.Exists(filePath))
             {
                 System.IO.File.Delete(filePath);
