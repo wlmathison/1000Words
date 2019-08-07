@@ -105,12 +105,26 @@ namespace _1000Words.Controllers
             }
 
             var album = await _context.Albums.FindAsync(id);
+
             if (album == null)
             {
                 return NotFound();
             }
-            ViewData["UserId"] = new SelectList(_context.ApplicationUsers, "Id", "Id", album.UserId);
-            return View(album);
+
+            var currentUser = await GetCurrentUserAsync();
+            if (currentUser.Id != album.UserId)
+            {
+                return NotFound();
+            }
+
+            var AlbumEditViewModel = new AlbumEditViewModel();
+
+            List<PhotoAlbum> photoAlbums = await _context.PhotoAlbums.Where(pa => pa.AlbumId == album.Id).Include(pa => pa.Photo).ToListAsync();
+
+            AlbumEditViewModel.PhotoAlbums = photoAlbums;
+            AlbumEditViewModel.Album = album;
+
+            return View(AlbumEditViewModel);
         }
 
         // POST: Albums/Edit/5

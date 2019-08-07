@@ -13,14 +13,10 @@
         var photoPath = "~/images/" + (item.Path ?? "noimage.jpg");
 
         <div class="m-2">
-            <div class="hovereffect">
+            <a asp-controller="Photos" asp-action="Details" asp-route-id="@item.Id">
                 <img class="card-img-top imageThumbnail" src="@photoPath"
                      asp-append-version="true" />
-                <div class="overlay">
-                    <a asp-controller="Photos" asp-action="Details" asp-route-id="@item.Id"
-                       class="btn btn-sm btn-light m-1 mt-5">Details</a>
-                </div>
-            </div>
+            </a>
         </div>
     }
 </div>

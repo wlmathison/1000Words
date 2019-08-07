@@ -32,26 +32,6 @@ namespace _1000Words.Controllers
             return View(await applicationDbContext.ToListAsync());
         }
 
-        // GET: PhotoAlbums/Details/5
-        public async Task<IActionResult> Details(int? id)
-        {
-            if (id == null)
-            {
-                return NotFound();
-            }
-
-            var photoAlbum = await _context.PhotoAlbums
-                .Include(p => p.Album)
-                .Include(p => p.Photo)
-                .FirstOrDefaultAsync(m => m.Id == id);
-            if (photoAlbum == null)
-            {
-                return NotFound();
-            }
-
-            return View(photoAlbum);
-        }
-
         // GET: PhotoAlbums/Create
         public async Task<IActionResult> Create(int? id)
         {
@@ -208,12 +188,12 @@ namespace _1000Words.Controllers
         // POST: PhotoAlbums/Delete/5
         [HttpPost, ActionName("Delete")]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> DeleteConfirmed(int id)
+        public async Task<IActionResult> Delete(int id)
         {
             var photoAlbum = await _context.PhotoAlbums.FindAsync(id);
             _context.PhotoAlbums.Remove(photoAlbum);
             await _context.SaveChangesAsync();
-            return RedirectToAction(nameof(Index));
+            return RedirectToAction("Edit", "Albums", new { id = photoAlbum.AlbumId });
         }
 
         private bool PhotoAlbumExists(int id)
