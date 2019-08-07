@@ -390,6 +390,13 @@ namespace _1000Words.Controllers
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> DeleteConfirmed(int id)
         {
+            //Find all join tables for the photo to be deleted
+            var photoAlbums = await _context.PhotoAlbums.Where(pa => pa.PhotoId == id).ToListAsync();
+
+            //Delete each join table for the current photo
+            photoAlbums.ForEach(pa => _context.PhotoAlbums.Remove(pa));
+
+            //Find and delete photo
             var photo = await _context.Photos.FindAsync(id);
             _context.Photos.Remove(photo);
             await _context.SaveChangesAsync();
