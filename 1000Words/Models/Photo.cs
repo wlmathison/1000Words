@@ -16,8 +16,6 @@ namespace _1000Words.Models
         [Required]
         public string Path { get; set; }
 
-        public bool IsFavorite { get; set; }
-
         [Required]
         public string UserId { get; set; }
 

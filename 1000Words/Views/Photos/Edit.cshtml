@@ -17,6 +17,7 @@
     <div class="col-md-4">
         <form asp-action="Edit">
             <div id="switches">
+                @* Createing a toggle switch for each description in the list of descriptions on the view model *@
                 @foreach (Description description in Model.Descriptions)
                 {
                     <div class="custom-control custom-switch">
@@ -39,11 +40,6 @@
                     </div>
                 </div>*@
 
-            <div class="form-group form-check">
-                <label class="form-check-label">
-                    <input class="form-check-input" asp-for="Photo.IsFavorite" /> @Html.DisplayNameFor(model => model.Photo.IsFavorite)
-                </label>
-            </div>
             <input type="hidden" asp-for="Photo.Date" />
             <input type="hidden" asp-for="Photo.UserId" />
             <div class="form-group">
