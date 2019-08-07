@@ -29,19 +29,13 @@
                         aria-expanded="false" aria-label="Toggle navigation">
                     <span class="navbar-toggler-icon"></span>
                 </button>
-                <div class="navbar-collapse collapse d-sm-inline-flex flex-sm-row-reverse">
+                <div class="navbar-collapse collapse d-sm-inline-flex flex-sm-row-reverse ml-lg-5">
                     <partial name="_LoginPartial" />
-                    <ul class="navbar-nav flex-grow-1">
-                        @if (SignInManager.IsSignedIn(User))
-                        {
+                    @if (SignInManager.IsSignedIn(User))
+                    {
+                        <ul class="navbar-nav flex-grow-1">
                             <li>
-                                <a class="navbar-brand" asp-area="" asp-controller="Photos" asp-action="Index">Photos</a>
-                            </li>
-                            <li>
-                                <a class="navbar-brand" asp-area="" asp-controller="Albums" asp-action="Index">Albums</a>
-                            </li>
-                            <li>
-                                <form asp-controller="Photos" asp-action="Index" method="get" class="input-group input-group-sm mb-3">
+                                <form asp-controller="Photos" asp-action="Index" method="get" class="input-group input-group-sm">
                                     <div class="input-group-prepend">
                                         <select class="custom-select custom-select-sm" id="inputGroupSelect" name="searchBy" value="@ViewData["searchBy"]">
                                             <option value="1" selected>Search by keywords</option>
@@ -57,8 +51,16 @@
                                     </div>
                                 </form>
                             </li>
-                        }
-                    </ul>
+                        </ul>
+                        <ul class="navbar-nav flex-grow-1">
+                            <li>
+                                <a class="navbar-brand" asp-area="" asp-controller="Photos" asp-action="Index">Photos</a>
+                            </li>
+                            <li>
+                                <a class="navbar-brand" asp-area="" asp-controller="Albums" asp-action="Index">Albums</a>
+                            </li>
+                        </ul>
+                    }
                 </div>
             </div>
         </nav>

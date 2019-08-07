@@ -59,7 +59,7 @@ body {
 }
 
 .imageThumbnail {
-    height: 250px;
+    height: 200px;
     width: auto;
 }
 
@@ -154,4 +154,8 @@ body {
 .hovereffect:hover a.info {
     -webkit-transition-delay: .2s;
     transition-delay: .2s;
+}
+
+.hide-border {
+    border: 0px none;
 }
