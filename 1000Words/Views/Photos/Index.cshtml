@@ -6,10 +6,21 @@
 
 <h1>Photos</h1>
 
-<p>
-    <a asp-action="Create" class="btn btn-primary">Add Photo</a>
-    <a asp-action="CreateMultiple" class="btn btn-primary">Add Multiple Photos</a>
-</p>
+<div>
+    <p>
+        <a asp-action="Create" class="btn btn-primary">Add Photo</a>
+        <a asp-action="CreateMultiple" class="btn btn-primary">Add Multiple Photos</a>
+    </p>
+    <form asp-controller="PhotoAlbums" asp-action="CreateMultiple" method="get">
+        @for (int i = 0; i < Model.Count(); i++)
+        {
+            <input type="hidden" asp-for="@Model.ToList()[i].Id" />
+        }
+        <div>
+            <input type="submit" value="Add All Photos to an Existing Album" class="btn btn-primary" />
+        </div>
+    </form>
+</div>
 
 @if (!Model.Any())
 {
@@ -31,8 +42,11 @@
                     <a asp-controller="Photos" asp-action="Details" asp-route-id="@item.Id"
                        class="btn btn-sm btn-light m-1 mt-5">Details</a>
                     <br />
+                    <a asp-controller="PhotoAlbums" asp-action="Create" asp-route-id="@item.Id"
+                       class="btn btn-sm btn-light m-1">Add to Album</a>
+                    <br />
                     <a asp-controller="Photos" asp-action="Edit" asp-route-id="@item.Id"
-                       class="btn btn-sm btn-light m-1">Edit</a>
+                       class="btn btn-sm btn-light m-1">Edit Keywords</a>
                     <br />
                     <a asp-controller="Photos" asp-action="Delete" asp-route-id="@item.Id"
                        class="btn btn-sm btn-light m-1">Delete</a>
@@ -41,3 +55,6 @@
         </div>
     }
 </div>
+
+@*<input type="checkbox" class="photo-checkbox" id="checkbox-@item.Id" />
+    <br />*@

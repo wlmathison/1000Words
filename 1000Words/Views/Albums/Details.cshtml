@@ -4,7 +4,8 @@
     ViewData["Title"] = "Details";
 }
 
-<h1>Album Details</h1>
+<h1>@Model.Album.Name</h1>
+<h5>(@Model.Photos.Count() photos)</h5>
 
 <div class="card-deck">
     @foreach (var item in Model.Photos)
@@ -12,18 +13,14 @@
         var photoPath = "~/images/" + (item.Path ?? "noimage.jpg");
 
         <div class="m-2">
-            <div class="hovereffect">
+            <a asp-controller="Photos" asp-action="Details" asp-route-id="@item.Id">
                 <img class="card-img-top imageThumbnail" src="@photoPath"
                      asp-append-version="true" />
-                <div class="overlay">
-                    <a asp-controller="Photos" asp-action="Details" asp-route-id="@item.Id"
-                       class="btn btn-sm btn-light m-1 mt-5">Details</a>
-                </div>
-            </div>
+            </a>
         </div>
     }
 </div>
 <div>
-    <a asp-action="Edit Album" asp-route-id="@Model.Album.Id">Edit</a> |
+    <a asp-action="Edit" asp-route-id="@Model.Album.Id">Edit Album</a> |
     <a asp-action="Index">Back to List</a>
 </div>

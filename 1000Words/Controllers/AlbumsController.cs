@@ -43,14 +43,8 @@ namespace _1000Words.Controllers
                 return NotFound();
             }
 
-            var AlbumDetailsViewModel = new AlbumDetailsViewModel();
-
             var album = await _context.Albums
                 .FirstOrDefaultAsync(a => a.Id == id);
-
-            List<PhotoAlbum> photoAlbums = await _context.PhotoAlbums.Where(pa => pa.AlbumId == album.Id).ToListAsync();
-
-            List<Photo> photos = await _context.Photos.Where(p => photoAlbums.Any(pa => pa.PhotoId == p.Id)).ToListAsync();
 
             if (album == null)
             {
@@ -62,6 +56,12 @@ namespace _1000Words.Controllers
             {
                 return NotFound();
             }
+
+            var AlbumDetailsViewModel = new AlbumDetailsViewModel();
+
+            List<PhotoAlbum> photoAlbums = await _context.PhotoAlbums.Where(pa => pa.AlbumId == album.Id).ToListAsync();
+
+            List<Photo> photos = await _context.Photos.Where(p => photoAlbums.Any(pa => pa.PhotoId == p.Id)).ToListAsync();
 
             AlbumDetailsViewModel.Album = album;
             AlbumDetailsViewModel.Photos = photos;
@@ -105,12 +105,26 @@ namespace _1000Words.Controllers
             }
 
             var album = await _context.Albums.FindAsync(id);
+
             if (album == null)
             {
                 return NotFound();
             }
-            ViewData["UserId"] = new SelectList(_context.ApplicationUsers, "Id", "Id", album.UserId);
-            return View(album);
+
+            var currentUser = await GetCurrentUserAsync();
+            if (currentUser.Id != album.UserId)
+            {
+                return NotFound();
+            }
+
+            var AlbumEditViewModel = new AlbumEditViewModel();
+
+            List<PhotoAlbum> photoAlbums = await _context.PhotoAlbums.Where(pa => pa.AlbumId == album.Id).Include(pa => pa.Photo).ToListAsync();
+
+            AlbumEditViewModel.PhotoAlbums = photoAlbums;
+            AlbumEditViewModel.Album = album;
+
+            return View(AlbumEditViewModel);
         }
 
         // POST: Albums/Edit/5
@@ -157,9 +171,9 @@ namespace _1000Words.Controllers
                 return NotFound();
             }
 
-            var album = await _context.Albums
-                .Include(a => a.User)
-                .FirstOrDefaultAsync(m => m.Id == id);
+            var currentUser = await GetCurrentUserAsync();
+            var album = await _context.Albums.Where(a => a.UserId == currentUser.Id).FirstOrDefaultAsync(a => a.Id == id);
+
             if (album == null)
             {
                 return NotFound();
@@ -174,7 +188,16 @@ namespace _1000Words.Controllers
         public async Task<IActionResult> DeleteConfirmed(int id)
         {
             var album = await _context.Albums.FindAsync(id);
+
+            //Find all join tables for the album to be deleted
+            var photoAlbums = await _context.PhotoAlbums.Where(pa => pa.AlbumId == id).ToListAsync();
+
+            //Delete each join table for the current album
+            photoAlbums.ForEach(pa => _context.PhotoAlbums.Remove(pa));
+
+            //Delete the current album
             _context.Albums.Remove(album);
+
             await _context.SaveChangesAsync();
             return RedirectToAction(nameof(Index));
         }

@@ -1,0 +1,35 @@
+﻿@model _1000Words.Models.ViewModels.PhotoAlbumCreateMultipleViewModel
+
+@{
+    ViewData["Title"] = "CreateMultiple";
+}
+
+<h1>Select Album</h1>
+
+<hr />
+<div class="row">
+    <div class="col-md-4">
+        <form asp-action="CreateMultiple" method="post">
+            <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+            <div class="form-group">
+                <label asp-for="@Model.PhotoAlbum" class="control-label"></label>
+                <select asp-for="@Model.PhotoAlbum.AlbumId" class="form-control" asp-items="ViewBag.AlbumId"></select>
+            </div>
+            @for (int i = 0; i < Model.Photos.Count(); i++)
+            {
+                <input type="hidden" asp-for="@Model.Photos[i].Id" />
+            }
+            <div class="form-group">
+                <input type="submit" value="Save to Album" class="btn btn-primary" />
+            </div>
+        </form>
+    </div>
+</div>
+
+<div>
+    <a href="javascript: history.go(-1)">Go Back</a>
+</div>
+
+@section Scripts {
+    @{await Html.RenderPartialAsync("_ValidationScriptsPartial");}
+}

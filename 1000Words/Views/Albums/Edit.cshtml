@@ -1,32 +1,48 @@
-﻿@model _1000Words.Models.Album
+﻿@model _1000Words.Models.ViewModels.AlbumEditViewModel
 
 @{
     ViewData["Title"] = "Edit";
 }
 
-<h1>Edit</h1>
+<h1>Edit Album</h1>
+<h5>(@Model.PhotoAlbums.Count() photos)</h5>
 
-<h4>Album</h4>
 <hr />
 <div class="row">
     <div class="col-md-4">
         <form asp-action="Edit">
             <div asp-validation-summary="ModelOnly" class="text-danger"></div>
-            <input type="hidden" asp-for="Id" />
+            <input type="hidden" asp-for="@Model.Album.Id" />
             <div class="form-group">
-                <label asp-for="Name" class="control-label"></label>
-                <input asp-for="Name" class="form-control" />
-                <span asp-validation-for="Name" class="text-danger"></span>
+                <label asp-for="@Model.Album.Name" class="control-label"></label>
+                <input asp-for="@Model.Album.Name" class="form-control" />
+                <span asp-validation-for="@Model.Album.Name" class="text-danger"></span>
             </div>
+            <input type="hidden" asp-for="@Model.Album.UserId" />
+
             <div class="form-group">
-                <label asp-for="UserId" class="control-label"></label>
-                <select asp-for="UserId" class="form-control" asp-items="ViewBag.UserId"></select>
-                <span asp-validation-for="UserId" class="text-danger"></span>
-            </div>
-            <div class="form-group">
-                <input type="submit" value="Save" class="btn btn-primary" />
+                <input type="submit" value="Save changed name" class="btn btn-primary" />
             </div>
         </form>
+
+        <div class="card-deck">
+            @foreach (var item in Model.PhotoAlbums)
+            {
+                var photoPath = "~/images/" + (item.Photo.Path ?? "noimage.jpg");
+
+                <form asp-controller="PhotoAlbums" asp-action="Delete" method="post" asp-route-id="@item.Id">
+                    <div class="m-2">
+                        <div class="hovereffect">
+                            <img class="card-img-top imageThumbnail" src="@photoPath"
+                                 asp-append-version="true" />
+                            <div class="overlay">
+                                <input type="submit" value="Remove Photo" class="btn btn-sm btn-light m-1 mt-5" />
+                            </div>
+                        </div>
+                    </div>
+                </form>
+            }
+        </div>
     </div>
 </div>
 
