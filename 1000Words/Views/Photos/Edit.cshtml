@@ -8,10 +8,13 @@
 <h1>Edit Keywords</h1>
 
 <hr />
-<div id="controls">
-    <button id="recordButton" class="btn btn-outline-danger mb-1">Record</button>
-
-    <button id="load-button" class="btn btn-secondary" type="button" disabled>
+<div id="controls" class="d-flex flex-row">
+    <button id="recordButton" class="btn btn-outline-danger mb-1 mr-3">Record</button>
+    <button id="load-recording" class="btn btn-sm btn-success mb-1 mr-2" type="button" disabled>
+        <span class="spinner-border spinner-border-sm" role="status" aria-hidden="true"></span>
+        Recording...
+    </button>
+    <button id="load-button" class="btn btn-sm btn-secondary mb-1" type="button" disabled>
         <span class="spinner-border spinner-border-sm" role="status" aria-hidden="true"></span>
         Loading...
     </button>
@@ -47,15 +50,12 @@
 
             <input type="hidden" asp-for="Photo.Date" />
             <input type="hidden" asp-for="Photo.UserId" />
-            <div class="form-group">
-                <input type="submit" value="Save" class="btn btn-primary" />
+            <div class="d-flex flex-row">
+                <input type="submit" value="Save" class="btn btn-primary mr-1" />
+                <a href="javascript: history.go(-1)" class="btn btn-secondary">Cancel</a>
             </div>
         </form>
     </div>
-</div>
-
-<div>
-    <a asp-action="Index">Back to List</a>
 </div>
 
 @section Scripts {

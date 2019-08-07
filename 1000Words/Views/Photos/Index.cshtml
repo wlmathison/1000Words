@@ -6,8 +6,8 @@
 
 <h1>Photos</h1>
 
-<div>
-    <p>
+<div class="d-flex flex-lg-row">
+    <p class="mr-1">
         <a asp-action="Create" class="btn btn-primary">Add Photo</a>
         <a asp-action="CreateMultiple" class="btn btn-primary">Add Multiple Photos</a>
     </p>
@@ -40,7 +40,7 @@
                      asp-append-version="true" />
                 <div class="overlay">
                     <a asp-controller="Photos" asp-action="Details" asp-route-id="@item.Id"
-                       class="btn btn-sm btn-light m-1 mt-5">Details</a>
+                       class="btn btn-sm btn-light m-1 mt-4">Details</a>
                     <br />
                     <a asp-controller="PhotoAlbums" asp-action="Create" asp-route-id="@item.Id"
                        class="btn btn-sm btn-light m-1">Add to Album</a>

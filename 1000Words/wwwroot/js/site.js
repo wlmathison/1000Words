@@ -14,6 +14,8 @@ var audioContext; //audio context to help us record
 
 var recordButton = document.getElementById("recordButton");
 var loadButton = document.getElementById("load-button");
+var loadRecordButton = document.getElementById("load-recording");
+
 var errorDiv = document.getElementById("edit-error-message");
 
 var switches = document.getElementById("switches");
@@ -65,6 +67,7 @@ function startRecording() {
 
         //start the recording process
         rec.record()
+        loadRecordButton.style.display = "block"
 
         console.log("Recording started");
 
@@ -87,7 +90,9 @@ function stopRecording() {
     rec.exportWAV(CreateToggleSwitches);
 
     // Display load spinner while waiting for results
+    loadRecordButton.style.display = "none"
     loadButton.style.display = "block";
+
 
 }
 
