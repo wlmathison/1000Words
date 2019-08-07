@@ -63,6 +63,11 @@ body {
     width: auto;
 }
 
+.welcomeImageThumbnail {
+    height: 375px;
+    width: auto;
+}
+
 .hovereffect {
     width: 100%;
     height: 100%;
