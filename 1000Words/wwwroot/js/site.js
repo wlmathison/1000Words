@@ -1,4 +1,4 @@
-﻿z// Please see documentation at https://docs.microsoft.com/aspnet/core/client-side/bundling-and-minification
+﻿// Please see documentation at https://docs.microsoft.com/aspnet/core/client-side/bundling-and-minification
 // for details on configuring this project to bundle and minify static web assets.
 
 // webkitURL is deprecated but nevertheless
@@ -13,16 +13,18 @@ var AudioContext = window.AudioContext || window.webkitAudioContext;
 var audioContext; //audio context to help us record
 
 var recordButton = document.getElementById("recordButton");
-var stopButton = document.getElementById("stopButton");
+var loadButton = document.getElementById("load-button");
+var errorDiv = document.getElementById("edit-error-message");
 
 var switches = document.getElementById("switches");
 
 //add events to those 2 buttons
-recordButton.addEventListener("click", startRecording);
-stopButton.addEventListener("click", stopRecording);
+recordButton.addEventListener("mousedown", startRecording);
+recordButton.addEventListener("mouseup", stopRecording);
 
 function startRecording() {
     console.log("recordButton clicked");
+    errorDiv.textContent = "";
 
 	/*
 		Simple constraints object, for more advanced audio features see
@@ -30,14 +32,6 @@ function startRecording() {
 	*/
 
     var constraints = { audio: true, video: false }
-
-    /*
-      Disable the record button until we get a success or fail from getUserMedia() 
-  */
-
-    recordButton.disabled = true;
-    stopButton.disabled = false;
-    //pauseButton.disabled = false
 
 	/*
     	We're using the standard promise based getUserMedia() 
@@ -77,17 +71,11 @@ function startRecording() {
     }).catch(function (err) {
         //enable the record button if getUserMedia() fails
         recordButton.disabled = false;
-        stopButton.disabled = true;
-        pauseButton.disabled = true
     });
 }
 
 function stopRecording() {
     console.log("stopButton clicked");
-
-    //disable the stop button, enable the record too allow for new recordings
-    stopButton.disabled = true;
-    recordButton.disabled = false;
 
     //tell the recorder to stop the recording
     rec.stop();
@@ -97,6 +85,10 @@ function stopRecording() {
 
     //create the wav blob and pass it on to createDownloadLink
     rec.exportWAV(CreateToggleSwitches);
+
+    // Display load spinner while waiting for results
+    loadButton.style.display = "block";
+
 }
 
 
@@ -160,8 +152,14 @@ function CreateToggleSwitches(blob) {
 
                     div.appendChild(input);
                     div.appendChild(label);
+
+                    loadButton.style.display = "none";
+
                     switches.appendChild(div);
                 });
+            } else {
+                loadButton.style.display = "none";
+                errorDiv.textContent = "Error - Please try again."
             }
         })
 }

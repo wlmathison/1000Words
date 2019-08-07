@@ -5,19 +5,24 @@
     var photoPath = "~/images/" + (Model.Photo.Path ?? "noimage.jpg");
 }
 
-<h1>Edit Photo</h1>
+<h1>Edit Keywords</h1>
 
 <hr />
 <div id="controls">
-    <button id="recordButton">Record</button>
-    <button id="stopButton" disabled>Stop</button>
+    <button id="recordButton" class="btn btn-outline-danger mb-1">Record</button>
+
+    <button id="load-button" class="btn btn-secondary" type="button" disabled>
+        <span class="spinner-border spinner-border-sm" role="status" aria-hidden="true"></span>
+        Loading...
+    </button>
 </div>
+<div id="edit-error-message"></div>
 
 <div class="row">
     <div class="col-md-4">
         <form asp-action="Edit">
             <div id="switches">
-                @* Createing a toggle switch for each description in the list of descriptions on the view model *@
+                @* Creating a toggle switch for each description in the list of descriptions on the view model *@
                 @foreach (Description description in Model.Descriptions)
                 {
                     <div class="custom-control custom-switch">
@@ -30,7 +35,7 @@
 
             <div asp-validation-summary="ModelOnly" class="text-danger"></div>
             <input type="hidden" asp-for="Photo.Id" />
-            <img class="card-img-top" src="@photoPath" asp-append-version="true" />
+            <img class="card-img-top mb-1" src="@photoPath" asp-append-version="true" />
             <input type="hidden" asp-for="Photo.Path" />
 
             @*<div class="form-group row">
