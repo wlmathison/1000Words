@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 
 namespace _1000Words.Models.ViewModels
 {
-    public class PhotoEditViewModel
+    public class PhotoDescriptionsViewModel
     {
         [Required]
         public Photo Photo { get; set; }
