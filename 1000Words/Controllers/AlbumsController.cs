@@ -32,7 +32,7 @@ namespace _1000Words.Controllers
         {
             var currentUser = await GetCurrentUserAsync();
 
-            return View(await _context.Albums.Where(a => a.UserId == currentUser.Id).ToListAsync());
+            return View(await _context.Albums.Where(a => a.UserId == currentUser.Id).Include(a => a.PhotoAlbums).ToListAsync());
         }
 
         // GET: Albums/Details/5

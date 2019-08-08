@@ -7,7 +7,7 @@
 <h1>Albums</h1>
 
 <p>
-    <a asp-action="Create">Create New</a>
+    <a asp-action="Create" class="btn btn-primary">Create New</a>
 </p>
 <table class="table">
     <thead>
@@ -15,20 +15,27 @@
             <th>
                 @Html.DisplayNameFor(model => model.Name)
             </th>
+            <th>
+                Photos
+            </th>
             <th></th>
         </tr>
     </thead>
     <tbody>
-@foreach (var item in Model) {
-        <tr>
-            <td>
-                @Html.DisplayFor(modelItem => item.Name)
-            </td>
-            <td>
-                <a asp-action="Edit" asp-route-id="@item.Id">Edit Album</a> |
-                <a asp-action="Details" asp-route-id="@item.Id">View Album</a> |
-                <a asp-action="Delete" asp-route-id="@item.Id">Delete Album</a>
-            </td>
-        </tr>}
+        @foreach (var item in Model)
+        {
+            <tr>
+                <td>
+                    @Html.DisplayFor(modelItem => item.Name)
+                </td>
+                <td>
+                    @item.PhotoAlbums.Count()
+                </td>
+                <td>
+                    <a asp-action="Edit" asp-route-id="@item.Id">Edit Album</a> |
+                    <a asp-action="Details" asp-route-id="@item.Id">View Album</a> |
+                    <a asp-action="Delete" asp-route-id="@item.Id">Delete Album</a>
+                </td>
+            </tr>}
     </tbody>
 </table>
