@@ -10,7 +10,9 @@
 <div>
     <div class="d-flex mb-2">
         <div class="col-md-4">
-            <img class="card-img" src="@photoPath" asp-append-version="true" />
+            <a data-toggle="modal" data-target="#photoModal" href="">
+                <img class="card-img" src="@photoPath" asp-append-version="true" />
+            </a>
         </div>
         <div class="col-md-4">
             <dl class="row">
@@ -35,6 +37,19 @@
                 </dd>
             </dl>
 
+        </div>
+    </div>
+</div>
+
+<div id="photoModal" class="modal fade" role="dialog">
+    <div class="modal-dialog modal-lg">
+        <div class="modal-content">
+            <div class="modal-body text-center d-block">
+                <img class="modal-photo" src="@photoPath" asp-append-version="true" />
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+            </div>
         </div>
     </div>
 </div>

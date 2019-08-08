@@ -167,3 +167,7 @@ body {
 #load-recording {
     display: none;
 }
+
+.modal-photo {
+    height: 500px;
+}
