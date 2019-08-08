@@ -7,28 +7,36 @@
 <h1>Select Album</h1>
 
 <hr />
-<div class="row">
-    <div class="col-md-4">
-        <form asp-action="CreateMultiple" method="post">
-            <div asp-validation-summary="ModelOnly" class="text-danger"></div>
-            <div class="form-group">
-                <label asp-for="@Model.PhotoAlbum" class="control-label"></label>
-                <select asp-for="@Model.PhotoAlbum.AlbumId" class="form-control" asp-items="ViewBag.AlbumId"></select>
-            </div>
-            @for (int i = 0; i < Model.Photos.Count(); i++)
-            {
-                <input type="hidden" asp-for="@Model.Photos[i].Id" />
-            }
-            <div class="form-group">
-                <input type="submit" value="Save to Album" class="btn btn-primary" />
-            </div>
-        </form>
-    </div>
-</div>
 
-<div>
-    <a href="javascript: history.go(-1)">Go Back</a>
-</div>
+@if (@Model.Photos.Count() == 0)
+{
+    <h5>You have selected no photos to add. Please try again.</h5>
+    <a asp-controller="Photos" asp-action="Index">Back to Photos</a>
+}
+else
+{
+    <div class="row">
+        <div class="col-md-4">
+            <form asp-action="CreateMultiple" method="post">
+                <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+                <div class="form-group">
+                    <label asp-for="@Model.PhotoAlbum" class="control-label"></label>
+                    <select asp-for="@Model.PhotoAlbum.AlbumId" class="form-control" asp-items="ViewBag.AlbumId"></select>
+                </div>
+                @for (int i = 0; i < Model.Photos.Count(); i++)
+                {
+                    <input type="hidden" asp-for="@Model.Photos[i].Id" />
+                }
+                <div class="d-flex flex-row">
+                    <input type="submit" value="Save to Album" class="btn btn-primary mr-1 btn-sm" />
+                    <a href="javascript: history.go(-1)" class="btn btn-secondary btn-sm">Cancel</a>
+                </div>
+            </form>
+        </div>
+    </div>
+}
+
+
 
 @section Scripts {
     @{await Html.RenderPartialAsync("_ValidationScriptsPartial");}

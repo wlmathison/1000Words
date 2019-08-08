@@ -29,19 +29,13 @@
                         aria-expanded="false" aria-label="Toggle navigation">
                     <span class="navbar-toggler-icon"></span>
                 </button>
-                <div class="navbar-collapse collapse d-sm-inline-flex flex-sm-row-reverse">
+                <div class="navbar-collapse collapse d-sm-inline-flex flex-sm-row-reverse ml-lg-5">
                     <partial name="_LoginPartial" />
-                    <ul class="navbar-nav flex-grow-1">
-                        @if (SignInManager.IsSignedIn(User))
-                        {
+                    @if (SignInManager.IsSignedIn(User))
+                    {
+                        <ul class="navbar-nav flex-grow-1">
                             <li>
-                                <a class="navbar-brand" asp-area="" asp-controller="Photos" asp-action="Index">Photos</a>
-                            </li>
-                            <li>
-                                <a class="navbar-brand" asp-area="" asp-controller="Albums" asp-action="Index">Albums</a>
-                            </li>
-                            <li>
-                                <form asp-controller="Photos" asp-action="Index" method="get" class="input-group input-group-sm mb-3">
+                                <form asp-controller="Photos" asp-action="Index" method="get" class="input-group input-group-sm">
                                     <div class="input-group-prepend">
                                         <select class="custom-select custom-select-sm" id="inputGroupSelect" name="searchBy" value="@ViewData["searchBy"]">
                                             <option value="1" selected>Search by keywords</option>
@@ -51,14 +45,22 @@
 
                                         </select>
                                     </div>
-                                    <input type="text" class="form-control" placeholder="Enter keywords" name="searchString" id="navSearchInput" value="@ViewData["CurrentFilter"]">
+                                    <input type="text" class="form-control" placeholder="Enter keywords" name="searchString" id="navSearchInput">
                                     <div class="input-group-append">
                                         <button class="btn btn-secondary btn-sm" type="submit">Search</button>
                                     </div>
                                 </form>
                             </li>
-                        }
-                    </ul>
+                        </ul>
+                        <ul class="navbar-nav flex-grow-1">
+                            <li>
+                                <a class="navbar-brand" asp-area="" asp-controller="Photos" asp-action="Index">Photos</a>
+                            </li>
+                            <li>
+                                <a class="navbar-brand" asp-area="" asp-controller="Albums" asp-action="Index">Albums</a>
+                            </li>
+                        </ul>
+                    }
                 </div>
             </div>
         </nav>
@@ -96,7 +98,6 @@
     </environment>
     <script src="~/lib/recorder.js/recorder.js"></script>
     <script src="~/js/site.js" asp-append-version="true"></script>
-    <script src="~/js/navSearch.js"></script>
 
     @RenderSection("Scripts", required: false)
 </body>

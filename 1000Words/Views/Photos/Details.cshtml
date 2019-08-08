@@ -1,30 +1,61 @@
-﻿@model _1000Words.Models.Photo
+﻿@model _1000Words.Models.ViewModels.PhotoDescriptionsViewModel
 
 @{
     ViewData["Title"] = "Details";
-    var photoPath = "~/images/" + (Model.Path ?? "noimage.jpg");
+    var photoPath = "~/images/" + (Model.Photo.Path ?? "noimage.jpg");
 }
 
 <h1>Photo Details</h1>
 
 <div>
-    <hr />
-    <div class="row">
+    <div class="d-flex mb-2">
         <div class="col-md-4">
-            <img class="card-img-top" src="@photoPath" asp-append-version="true" />
+            <a data-toggle="modal" data-target="#photoModal" href="">
+                <img class="card-img" src="@photoPath" asp-append-version="true" />
+            </a>
+        </div>
+        <div class="col-md-4">
+            <dl class="row">
+                <dt class="col-sm">
+                    @Html.DisplayNameFor(model => model.Photo.FormattedDate):
+                </dt>
+                <dd class="col-sm">
+                    @Html.DisplayFor(model => model.Photo.FormattedDate)
+                </dd>
+            </dl>
+            <dl class="row">
+                <dt class="col-sm">
+                    Keywords:
+                </dt>
+                <dd class="col-sm">
+                    @foreach (Description description in Model.Descriptions)
+                    {
+                        <p>
+                            @description.Keyword
+                        </p>
+                    }
+                </dd>
+            </dl>
+
         </div>
     </div>
-    <dl class="row">
-        <dt class="col-sm-2">
-            @Html.DisplayNameFor(model => model.FormattedDate)
-        </dt>
-        <dd class="col-sm-10">
-            @Html.DisplayFor(model => model.FormattedDate)
-        </dd>
-    </dl>
 </div>
-<div>
-    <a asp-action="Edit" asp-route-id="@Model.Id">Edit</a> |
-    <a asp-action="Delete" asp-route-id="@Model.Id">Delete</a> |
-    <a asp-action="Index">Back to List</a>
+
+<div id="photoModal" class="modal fade" role="dialog">
+    <div class="modal-dialog modal-lg">
+        <div class="modal-content">
+            <div class="modal-body text-center d-block">
+                <img class="modal-photo" src="@photoPath" asp-append-version="true" />
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="col-md-4">
+    <a asp-action="Edit" asp-route-id="@Model.Photo.Id">Edit Keywords</a> |
+    <a asp-action="Delete" asp-route-id="@Model.Photo.Id">Delete</a> |
+    <a asp-action="Index">Back to Photos</a>
 </div>

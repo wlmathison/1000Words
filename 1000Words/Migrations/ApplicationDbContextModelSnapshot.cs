@@ -213,7 +213,7 @@ namespace _1000Words.Migrations
                         {
                             Id = "00000000-ffff-ffff-ffff-ffffffffffff",
                             AccessFailedCount = 0,
-                            ConcurrencyStamp = "a2cf6e39-1041-436e-a4a6-9b059e14c4dd",
+                            ConcurrencyStamp = "81bbf2a9-c8cf-462f-9116-508b82e54fc2",
                             Email = "admin@admin.com",
                             EmailConfirmed = true,
                             FirstName = "John",
@@ -221,7 +221,7 @@ namespace _1000Words.Migrations
                             LockoutEnabled = false,
                             NormalizedEmail = "ADMIN@ADMIN.COM",
                             NormalizedUserName = "ADMIN",
-                            PasswordHash = "AQAAAAEAACcQAAAAED3Q58bugikF8SjnE38RictnBsrUz8Xmzmpg7wAWuZ979WCbkL/Re59eNf0HTeu7cA==",
+                            PasswordHash = "AQAAAAEAACcQAAAAENz7lSEZEozBCTAsx5VuKRE+jpT+ox4GvhDTvRet41sk377+WLHugXodSlThbHczBw==",
                             PhoneNumberConfirmed = false,
                             SecurityStamp = "7f434309-a4d9-48e9-9ebb-8803db794577",
                             TwoFactorEnabled = false,
@@ -250,8 +250,6 @@ namespace _1000Words.Migrations
                         .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
 
                     b.Property<DateTime?>("Date");
-
-                    b.Property<bool>("IsFavorite");
 
                     b.Property<string>("Path")
                         .IsRequired();
@@ -394,7 +392,7 @@ namespace _1000Words.Migrations
                         .OnDelete(DeleteBehavior.Cascade);
 
                     b.HasOne("_1000Words.Models.Photo", "Photo")
-                        .WithMany()
+                        .WithMany("PhotoDescriptions")
                         .HasForeignKey("PhotoId")
                         .OnDelete(DeleteBehavior.Cascade);
                 });

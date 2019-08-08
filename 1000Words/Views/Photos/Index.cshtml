@@ -6,10 +6,18 @@
 
 <h1>Photos</h1>
 
-<div>
-    <p>
-        <a asp-action="Create" class="btn btn-primary">Add Photo</a>
-        <a asp-action="CreateMultiple" class="btn btn-primary">Add Multiple Photos</a>
+<div class="d-flex flex-row mb-2">
+    <h5>(@Model.Count() photos)</h5>
+    <a data-toggle="modal" data-target="#slideshowModal" href=""
+       class="btn btn-sm btn-success ml-2">
+        View Slideshow
+    </a>
+</div>
+
+<div class="d-flex flex-lg-row">
+    <p class="mr-1">
+        <a asp-action="Create" class="btn btn-primary btn-sm">Add Photo</a>
+        <a asp-action="CreateMultiple" class="btn btn-primary btn-sm">Add Multiple Photos</a>
     </p>
     <form asp-controller="PhotoAlbums" asp-action="CreateMultiple" method="get">
         @for (int i = 0; i < Model.Count(); i++)
@@ -17,7 +25,7 @@
             <input type="hidden" asp-for="@Model.ToList()[i].Id" />
         }
         <div>
-            <input type="submit" value="Add All Photos to an Existing Album" class="btn btn-primary" />
+            <input type="submit" value="Add All Photos to an Existing Album" class="btn btn-primary btn-sm" />
         </div>
     </form>
 </div>
@@ -25,7 +33,7 @@
 @if (!Model.Any())
 {
     <h4>
-        No results found.
+        No results found for "@ViewData["DisplayFilter"]".
     </h4>
 }
 
@@ -34,13 +42,13 @@
     {
         var photoPath = "~/images/" + (item.Path ?? "noimage.jpg");
 
-        <div class="m-2">
+        <div class="m-1">
             <div class="hovereffect">
                 <img class="card-img-top imageThumbnail" src="@photoPath"
                      asp-append-version="true" />
                 <div class="overlay">
                     <a asp-controller="Photos" asp-action="Details" asp-route-id="@item.Id"
-                       class="btn btn-sm btn-light m-1 mt-5">Details</a>
+                       class="btn btn-sm btn-light m-1 mt-4">Details</a>
                     <br />
                     <a asp-controller="PhotoAlbums" asp-action="Create" asp-route-id="@item.Id"
                        class="btn btn-sm btn-light m-1">Add to Album</a>
@@ -54,6 +62,54 @@
             </div>
         </div>
     }
+</div>
+
+@*Slideshow Modal*@
+<div id="slideshowModal" class="modal fade" role="dialog">
+    <div class="modal-dialog modal-lg">
+        <div class="modal-content">
+            <div class="modal-body text-center d-block">
+                <div id="carouselExampleControls" class="carousel slide" data-ride="carousel" data-interval="3000">
+                    <div class="carousel-inner">
+                        @for (var i = 0; i < Model.Count(); i++)
+                        {
+                            var photoPath = "~/images/" + (Model.ToList()[i].Path ?? "noimage.jpg");
+
+                            // If first photo set class to active
+                            if (i == 0)
+                            {
+                                <div class="carousel-item active">
+                                    <div class="m-1">
+                                        <img class="modal-photo" src="@photoPath"
+                                             asp-append-version="true" />
+                                    </div>
+                                </div>
+                            }
+                            else
+                            {
+                                <div class="carousel-item">
+                                    <div class="m-1">
+                                        <img class="modal-photo" src="@photoPath"
+                                             asp-append-version="true" />
+                                    </div>
+                                </div>
+                            }
+
+                        }
+                    </div>
+
+                    <a class="carousel-control-prev" href="#carouselExampleControls" role="button" data-slide="prev">
+                        <span class="carousel-control-prev-icon" aria-hidden="true"></span>
+                        <span class="sr-only">Previous</span>
+                    </a>
+                    <a class="carousel-control-next" href="#carouselExampleControls" role="button" data-slide="next">
+                        <span class="carousel-control-next-icon" aria-hidden="true"></span>
+                        <span class="sr-only">Next</span>
+                    </a>
+                </div>
+            </div>
+        </div>
+    </div>
 </div>
 
 @*<input type="checkbox" class="photo-checkbox" id="checkbox-@item.Id" />

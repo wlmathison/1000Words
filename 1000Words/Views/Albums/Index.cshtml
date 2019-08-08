@@ -1,34 +1,41 @@
 ﻿@model IEnumerable<_1000Words.Models.Album>
 
-@{
+    @{
     ViewData["Title"] = "Index";
-}
+    }
 
-<h1>Albums</h1>
+    <h1>Albums</h1>
 
-<p>
-    <a asp-action="Create">Create New</a>
-</p>
-<table class="table">
-    <thead>
-        <tr>
-            <th>
-                @Html.DisplayNameFor(model => model.Name)
-            </th>
-            <th></th>
-        </tr>
-    </thead>
-    <tbody>
-@foreach (var item in Model) {
-        <tr>
-            <td>
-                @Html.DisplayFor(modelItem => item.Name)
-            </td>
-            <td>
-                <a asp-action="Edit" asp-route-id="@item.Id">Edit Album</a> |
-                <a asp-action="Details" asp-route-id="@item.Id">View Album</a> |
-                <a asp-action="Delete" asp-route-id="@item.Id">Delete Album</a>
-            </td>
-        </tr>}
-    </tbody>
-</table>
+    <p>
+        <a asp-action="Create" class="btn btn-primary btn-sm">Create New</a>
+    </p>
+    <table class="table">
+        <thead>
+            <tr>
+                <th>
+                    <a asp-action="Index" asp-route-sortOrder="@ViewData["NameSortParm"]">@Html.DisplayNameFor(model => model.Name)</a>
+                </th>
+                <th>
+                    <a asp-action="Index" asp-route-sortOrder="@ViewData["PhotoSortParm"]">Photos</a>
+                </th>
+                <th></th>
+            </tr>
+        </thead>
+        <tbody>
+            @foreach (var item in Model)
+            {
+            <tr>
+                <td>
+                    @Html.DisplayFor(modelItem => item.Name)
+                </td>
+                <td>
+                    @item.PhotoAlbums.Count()
+                </td>
+                <td>
+                    <a asp-action="Edit" asp-route-id="@item.Id">Edit Album</a> |
+                    <a asp-action="Details" asp-route-id="@item.Id">View Album</a> |
+                    <a asp-action="Delete" asp-route-id="@item.Id">Delete Album</a>
+                </td>
+            </tr>}
+        </tbody>
+    </table>

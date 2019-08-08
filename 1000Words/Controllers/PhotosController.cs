@@ -38,6 +38,7 @@ namespace _1000Words.Controllers
         public async Task<IActionResult> Index(string searchString, string searchBy)
         {
             ViewData["CurrentFilter"] = searchString;
+            ViewData["DisplayFilter"] = searchString;
             ViewData["searchBy"] = searchBy;
 
             var currentUser = await GetCurrentUserAsync();
@@ -116,7 +117,19 @@ namespace _1000Words.Controllers
                 return NotFound();
             }
 
-            return View(photo);
+            // Return all PhotoDescription join tables where the photo id is included into a list
+            List<PhotoDescription> photoDescriptions = await _context.PhotoDescriptions.Where(pd => pd.PhotoId == id).ToListAsync();
+
+            // Return all descriptions where the description id is in the list of PhotoDescriptions into a list
+            List<Description> descriptions = await _context.Descriptions.Where(d => photoDescriptions.Any(pd => pd.DescriptionId == d.Id)).ToListAsync();
+
+            var model = new PhotoDescriptionsViewModel();
+
+            model.Photo = photo;
+            model.PhotoDescriptions = photoDescriptions;
+            model.Descriptions = descriptions;
+
+            return View(model);
         }
 
         // GET: Photos/Create
@@ -205,7 +218,7 @@ namespace _1000Words.Controllers
                 string filePath = null;
                 var currentUser = await GetCurrentUserAsync();
 
-                // If user selects more than one image
+                // If model contains any photos
                 if (model.Photos != null && model.Photos.Count > 0)
                 {
                     foreach (IFormFile indPhoto in model.Photos)
@@ -231,18 +244,28 @@ namespace _1000Words.Controllers
                             UserId = currentUser.Id
                         };
 
-                        using (ExifReader reader = new ExifReader(filePath))
+                        try
                         {
-                            DateTime dateTime;
-                            if (reader.GetTagValue<DateTime>(ExifTags.DateTimeDigitized, out dateTime))
+                            using (ExifReader reader = new ExifReader(filePath))
                             {
-                                photo.Date = dateTime;
+                                DateTime dateTime;
+                                if (reader.GetTagValue<DateTime>(ExifTags.DateTimeDigitized, out dateTime))
+                                {
+                                    photo.Date = dateTime;
+                                }
                             }
+                        }
+                        catch (ExifLibException)
+                        {
                         }
 
                         _context.Add(photo);
                         await _context.SaveChangesAsync();
                     }
+                }
+                else
+                {
+                    return View();
                 }
 
                 return RedirectToAction(nameof(Index));
@@ -276,7 +299,7 @@ namespace _1000Words.Controllers
             // Return all descriptions where the description id is in the list of PhotoDescriptions into a list
             List<Description> descriptions = await _context.Descriptions.Where(d => photoDescriptions.Any(pd => pd.DescriptionId == d.Id)).ToListAsync();
 
-            var model = new PhotoEditViewModel();
+            var model = new PhotoDescriptionsViewModel();
 
             model.Photo = photo;
             model.PhotoDescriptions = photoDescriptions;
@@ -290,7 +313,7 @@ namespace _1000Words.Controllers
         // more details see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Edit(int id, PhotoEditViewModel model)
+        public async Task<IActionResult> Edit(int id, PhotoDescriptionsViewModel model)
         {
             var currentUser = await GetCurrentUserAsync();
 
@@ -407,7 +430,7 @@ namespace _1000Words.Controllers
             var photo = await _context.Photos.FindAsync(id);
             _context.Photos.Remove(photo);
             await _context.SaveChangesAsync();
- 
+
             // Geting path of image being deleted from the database
             string uploadsFolder = Path.Combine(hostingEnvironment.WebRootPath, "images");
             string filePath = Path.Combine(uploadsFolder, photo.Path);

@@ -28,11 +28,30 @@ namespace _1000Words.Controllers
         private Task<ApplicationUser> GetCurrentUserAsync() => _userManager.GetUserAsync(HttpContext.User);
 
         // GET: Albums
-        public async Task<IActionResult> Index()
+        public async Task<IActionResult> Index(string sortOrder)
         {
+            ViewData["NameSortParm"] = String.IsNullOrEmpty(sortOrder) ? "name_desc" : "";
+            ViewData["PhotoSortParm"] = sortOrder == "Photo" ? "photo_desc" : "Photo";
             var currentUser = await GetCurrentUserAsync();
+            var albums = from a in _context.Albums.Where(a => a.UserId == currentUser.Id).Include(a => a.PhotoAlbums)
+                         select a;
 
-            return View(await _context.Albums.Where(a => a.UserId == currentUser.Id).ToListAsync());
+            switch (sortOrder)
+            {
+                case "name_desc":
+                    albums = albums.OrderByDescending(a => a.Name);
+                    break;
+                case "Photo":
+                    albums = albums.OrderBy(a => a.PhotoAlbums.Count());
+                    break;
+                case "photo_desc":
+                    albums = albums.OrderByDescending(a => a.PhotoAlbums.Count());
+                    break;
+                default:
+                    albums = albums.OrderBy(a => a.Name);
+                    break;
+            }
+            return View(await albums.AsNoTracking().ToListAsync());
         }
 
         // GET: Albums/Details/5
