@@ -13,7 +13,7 @@ namespace _1000Words.Controllers
     public class GoogleSpeechController : ControllerBase
     {
         [HttpPost]
-        public async Task<IActionResult> PostWav(IFormFile audio)
+        public IActionResult PostWav(IFormFile audio)
         {
             // Uploading audio file to cloud Speech-to-Text API
             GoogleSpeech.UploadAudio(audio);
