@@ -244,13 +244,19 @@ namespace _1000Words.Controllers
                             UserId = currentUser.Id
                         };
 
-                        using (ExifReader reader = new ExifReader(filePath))
+                        try
                         {
-                            DateTime dateTime;
-                            if (reader.GetTagValue<DateTime>(ExifTags.DateTimeDigitized, out dateTime))
+                            using (ExifReader reader = new ExifReader(filePath))
                             {
-                                photo.Date = dateTime;
+                                DateTime dateTime;
+                                if (reader.GetTagValue<DateTime>(ExifTags.DateTimeDigitized, out dateTime))
+                                {
+                                    photo.Date = dateTime;
+                                }
                             }
+                        }
+                        catch (ExifLibException)
+                        {
                         }
 
                         _context.Add(photo);
