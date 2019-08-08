@@ -5,7 +5,14 @@
 }
 
 <h1>@Model.Album.Name</h1>
-<h5>(@Model.Photos.Count() photos)</h5>
+
+<div class="d-flex flex-row">
+    <h5>(@Model.Photos.Count() photos)</h5>
+    <a data-toggle="modal" data-target="#slideshowModal" href=""
+       class="btn btn-sm btn-success ml-2">
+        View Slideshow
+    </a>
+</div>
 
 <div class="card-deck">
     @foreach (var item in Model.Photos)
@@ -29,6 +36,7 @@
             </div>
         </div>
 
+        //Modal with large image of individual photo
         <div id="photoModal-@item.Id" class="modal fade" role="dialog">
             <div class="modal-dialog modal-lg">
                 <div class="modal-content">
@@ -44,7 +52,56 @@
     }
 </div>
 
+@*Slideshow Modal*@
+<div id="slideshowModal" class="modal fade" role="dialog">
+    <div class="modal-dialog modal-lg">
+        <div class="modal-content">
+            <div class="modal-body text-center d-block">
+                <div id="carouselExampleControls" class="carousel slide" data-ride="carousel" data-interval="3000">
+                    <div class="carousel-inner">
+                        @for (var i = 0; i < Model.Photos.Count(); i++)
+                        {
+                            var photoPath = "~/images/" + (Model.Photos[i].Path ?? "noimage.jpg");
+
+                            // If first photo set class to active
+                            if (i == 0)
+                            {
+                                <div class="carousel-item active">
+                                    <div class="m-1">
+                                        <img class="modal-photo" src="@photoPath"
+                                             asp-append-version="true" />
+                                    </div>
+                                </div>
+                            }
+                            else
+                            {
+                                <div class="carousel-item">
+                                    <div class="m-1">
+                                        <img class="modal-photo" src="@photoPath"
+                                             asp-append-version="true" />
+                                    </div>
+                                </div>
+                            }
+
+                        }
+                    </div>
+
+                    <a class="carousel-control-prev" href="#carouselExampleControls" role="button" data-slide="prev">
+                        <span class="carousel-control-prev-icon" aria-hidden="true"></span>
+                        <span class="sr-only">Previous</span>
+                    </a>
+                    <a class="carousel-control-next" href="#carouselExampleControls" role="button" data-slide="next">
+                        <span class="carousel-control-next-icon" aria-hidden="true"></span>
+                        <span class="sr-only">Next</span>
+                    </a>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
 <div>
     <a asp-action="Edit" asp-route-id="@Model.Album.Id">Edit Album</a> |
     <a asp-action="Index">Back to Albums</a>
 </div>
+
