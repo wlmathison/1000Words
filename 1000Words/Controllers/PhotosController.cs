@@ -38,6 +38,7 @@ namespace _1000Words.Controllers
         public async Task<IActionResult> Index(string searchString, string searchBy)
         {
             ViewData["CurrentFilter"] = searchString;
+            ViewData["DisplayFilter"] = searchString;
             ViewData["searchBy"] = searchBy;
 
             var currentUser = await GetCurrentUserAsync();
@@ -91,6 +92,7 @@ namespace _1000Words.Controllers
                 }
             }
 
+            ViewData["CurrentFilter"] = null;
             return View(await applicationDbContext.ToListAsync());
         }
 
