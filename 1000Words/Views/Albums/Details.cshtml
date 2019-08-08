@@ -12,14 +12,38 @@
     {
         var photoPath = "~/images/" + (item.Path ?? "noimage.jpg");
 
-        <div class="m-2">
-            <a asp-controller="Photos" asp-action="Details" asp-route-id="@item.Id">
+        <div class="m-1">
+            <div class="hovereffect">
                 <img class="card-img-top imageThumbnail" src="@photoPath"
                      asp-append-version="true" />
-            </a>
+                <div class="overlay">
+                    <a data-toggle="modal" data-target="#photoModal-@item.Id" href=""
+                       class="btn btn-sm btn-light m-1 mt-5">
+                        View Photo
+                    </a>
+                    <br />
+                    <a asp-controller="Photos" asp-action="Details" asp-route-id="@item.Id"
+                       class="btn btn-sm btn-light m-1">Photo Details</a>
+
+                </div>
+            </div>
+        </div>
+
+        <div id="photoModal-@item.Id" class="modal fade" role="dialog">
+            <div class="modal-dialog modal-lg">
+                <div class="modal-content">
+                    <div class="modal-body text-center d-block">
+                        <img class="modal-photo" src="@photoPath" asp-append-version="true" />
+                    </div>
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+                    </div>
+                </div>
+            </div>
         </div>
     }
 </div>
+
 <div>
     <a asp-action="Edit" asp-route-id="@Model.Album.Id">Edit Album</a> |
     <a asp-action="Index">Back to Albums</a>
