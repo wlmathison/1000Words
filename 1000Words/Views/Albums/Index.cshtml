@@ -1,29 +1,29 @@
 ﻿@model IEnumerable<_1000Words.Models.Album>
 
-@{
+    @{
     ViewData["Title"] = "Index";
-}
+    }
 
-<h1>Albums</h1>
+    <h1>Albums</h1>
 
-<p>
-    <a asp-action="Create" class="btn btn-primary">Create New</a>
-</p>
-<table class="table">
-    <thead>
-        <tr>
-            <th>
-                @Html.DisplayNameFor(model => model.Name)
-            </th>
-            <th>
-                Photos
-            </th>
-            <th></th>
-        </tr>
-    </thead>
-    <tbody>
-        @foreach (var item in Model)
-        {
+    <p>
+        <a asp-action="Create" class="btn btn-primary">Create New</a>
+    </p>
+    <table class="table">
+        <thead>
+            <tr>
+                <th>
+                    <a asp-action="Index" asp-route-sortOrder="@ViewData["NameSortParm"]">@Html.DisplayNameFor(model => model.Name)</a>
+                </th>
+                <th>
+                    <a asp-action="Index" asp-route-sortOrder="@ViewData["PhotoSortParm"]">Photos</a>
+                </th>
+                <th></th>
+            </tr>
+        </thead>
+        <tbody>
+            @foreach (var item in Model)
+            {
             <tr>
                 <td>
                     @Html.DisplayFor(modelItem => item.Name)
@@ -37,5 +37,5 @@
                     <a asp-action="Delete" asp-route-id="@item.Id">Delete Album</a>
                 </td>
             </tr>}
-    </tbody>
-</table>
+        </tbody>
+    </table>

@@ -92,7 +92,6 @@ namespace _1000Words.Controllers
                 }
             }
 
-            ViewData["CurrentFilter"] = null;
             return View(await applicationDbContext.ToListAsync());
         }
 
