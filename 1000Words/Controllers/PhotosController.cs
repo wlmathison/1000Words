@@ -218,7 +218,7 @@ namespace _1000Words.Controllers
                 string filePath = null;
                 var currentUser = await GetCurrentUserAsync();
 
-                // If user selects more than one image
+                // If model contains any photos
                 if (model.Photos != null && model.Photos.Count > 0)
                 {
                     foreach (IFormFile indPhoto in model.Photos)
@@ -256,6 +256,10 @@ namespace _1000Words.Controllers
                         _context.Add(photo);
                         await _context.SaveChangesAsync();
                     }
+                }
+                else
+                {
+                    return View();
                 }
 
                 return RedirectToAction(nameof(Index));
