@@ -16,6 +16,8 @@ var recordButton = document.getElementById("recordButton");
 var loadButton = document.getElementById("load-button");
 var loadRecordButton = document.getElementById("load-recording");
 
+var recording = false;
+
 var errorDiv = document.getElementById("edit-error-message");
 
 var switches = document.getElementById("switches");
@@ -67,6 +69,7 @@ function startRecording() {
 
         //start the recording process
         rec.record()
+        recording = true;
         loadRecordButton.style.display = "block"
 
         console.log("Recording started");
@@ -80,18 +83,25 @@ function startRecording() {
 function stopRecording() {
     console.log("stopButton clicked");
 
-    //tell the recorder to stop the recording
-    rec.stop();
+    if (recording) {
+        //tell the recorder to stop the recording
+        rec.stop();
+        recording = false;
 
-    //stop microphone access
-    gumStream.getAudioTracks()[0].stop();
+        //stop microphone access
+        gumStream.getAudioTracks()[0].stop();
 
-    //create the wav blob and pass it on to createDownloadLink
-    rec.exportWAV(CreateToggleSwitches);
+        //create the wav blob and pass it on to createDownloadLink
+        rec.exportWAV(CreateToggleSwitches);
 
-    // Display load spinner while waiting for results
-    loadRecordButton.style.display = "none"
-    loadButton.style.display = "block";
+        // Display load spinner while waiting for results
+        loadRecordButton.style.display = "none"
+        loadButton.style.display = "block";
+    }
+    else {
+        setTimeout(stopRecording, 20);
+    }
+
 
 
 }
