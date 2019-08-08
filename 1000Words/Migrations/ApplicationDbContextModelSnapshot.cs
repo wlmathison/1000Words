@@ -213,7 +213,7 @@ namespace _1000Words.Migrations
                         {
                             Id = "00000000-ffff-ffff-ffff-ffffffffffff",
                             AccessFailedCount = 0,
-                            ConcurrencyStamp = "81bbf2a9-c8cf-462f-9116-508b82e54fc2",
+                            ConcurrencyStamp = "8af4cee7-bf19-4153-a949-2257f309d530",
                             Email = "admin@admin.com",
                             EmailConfirmed = true,
                             FirstName = "John",
@@ -221,9 +221,9 @@ namespace _1000Words.Migrations
                             LockoutEnabled = false,
                             NormalizedEmail = "ADMIN@ADMIN.COM",
                             NormalizedUserName = "ADMIN",
-                            PasswordHash = "AQAAAAEAACcQAAAAENz7lSEZEozBCTAsx5VuKRE+jpT+ox4GvhDTvRet41sk377+WLHugXodSlThbHczBw==",
+                            PasswordHash = "AQAAAAEAACcQAAAAEPcBhNE8U9tH3xaw9s02kmvb9yftka+SiSWpoZlwCJv9iailtnRvmPVCTU3onx2BCw==",
                             PhoneNumberConfirmed = false,
-                            SecurityStamp = "7f434309-a4d9-48e9-9ebb-8803db794577",
+                            SecurityStamp = "c2a2154cf364_2019_06_14_C31_0110_1b.jpg",
                             TwoFactorEnabled = false,
                             UserName = "admin"
                         });
@@ -262,6 +262,43 @@ namespace _1000Words.Migrations
                     b.HasIndex("UserId");
 
                     b.ToTable("Photos");
+
+                    b.HasData(
+                        new
+                        {
+                            Id = 1,
+                            Date = new DateTime(2019, 8, 8, 13, 42, 19, 395, DateTimeKind.Local).AddTicks(1911),
+                            Path = "95a01bee-7397-47be-ba77-3dc44119b887_2019_06_14_C31_0110_1b.jpg",
+                            UserId = "00000000-ffff-ffff-ffff-ffffffffffff"
+                        },
+                        new
+                        {
+                            Id = 2,
+                            Date = new DateTime(2019, 8, 8, 13, 42, 19, 400, DateTimeKind.Local).AddTicks(845),
+                            Path = "c4e22ffb-45ec-4bc8-ac47-87cd76766dfd_2019_06_14_C31_G_0010b.jpg",
+                            UserId = "00000000-ffff-ffff-ffff-ffffffffffff"
+                        },
+                        new
+                        {
+                            Id = 3,
+                            Date = new DateTime(2019, 8, 8, 13, 42, 19, 400, DateTimeKind.Local).AddTicks(957),
+                            Path = "bcda55b6-e319-4ce1-914c-29e0aa9c7e34_PA170240.JPG",
+                            UserId = "00000000-ffff-ffff-ffff-ffffffffffff"
+                        },
+                        new
+                        {
+                            Id = 4,
+                            Date = new DateTime(2019, 8, 8, 13, 42, 19, 400, DateTimeKind.Local).AddTicks(993),
+                            Path = "f325249c-13a7-47c9-968c-327302bfecc4_PA200468.JPG",
+                            UserId = "00000000-ffff-ffff-ffff-ffffffffffff"
+                        },
+                        new
+                        {
+                            Id = 5,
+                            Date = new DateTime(2019, 8, 8, 13, 42, 19, 400, DateTimeKind.Local).AddTicks(1023),
+                            Path = "85749647-022a-4249-adb2-ee73b588b51f_PA280629.JPG",
+                            UserId = "00000000-ffff-ffff-ffff-ffffffffffff"
+                        });
                 });
 
             modelBuilder.Entity("_1000Words.Models.PhotoAlbum", b =>
@@ -389,12 +426,12 @@ namespace _1000Words.Migrations
                     b.HasOne("_1000Words.Models.Description", "Description")
                         .WithMany("PhotoDescriptions")
                         .HasForeignKey("DescriptionId")
-                        .OnDelete(DeleteBehavior.Cascade);
+                        .OnDelete(DeleteBehavior.Restrict);
 
                     b.HasOne("_1000Words.Models.Photo", "Photo")
                         .WithMany("PhotoDescriptions")
                         .HasForeignKey("PhotoId")
-                        .OnDelete(DeleteBehavior.Cascade);
+                        .OnDelete(DeleteBehavior.Restrict);
                 });
 #pragma warning restore 612, 618
         }
