@@ -15,7 +15,7 @@
         <div class="col-md-4">
             <dl class="row">
                 <dt class="col-sm">
-                    @Html.DisplayNameFor(model => model.Photo.FormattedDate)
+                    @Html.DisplayNameFor(model => model.Photo.FormattedDate):
                 </dt>
                 <dd class="col-sm">
                     @Html.DisplayFor(model => model.Photo.FormattedDate)
@@ -23,8 +23,7 @@
             </dl>
             <dl class="row">
                 <dt class="col-sm">
-                    @Html.DisplayNameFor(model => model.Descriptions)
-
+                    Keywords:
                 </dt>
                 <dd class="col-sm">
                     @foreach (Description description in Model.Descriptions)
@@ -43,5 +42,5 @@
 <div class="col-md-4">
     <a asp-action="Edit" asp-route-id="@Model.Photo.Id">Edit</a> |
     <a asp-action="Delete" asp-route-id="@Model.Photo.Id">Delete</a> |
-    <a asp-action="Index">Back to List</a>
+    <a asp-action="Index">Back to Photos</a>
 </div>

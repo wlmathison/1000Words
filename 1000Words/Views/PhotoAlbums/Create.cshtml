@@ -16,15 +16,12 @@
                 <select asp-for="AlbumId" class="form-control" asp-items="ViewBag.AlbumId"></select>
             </div>
             <input type="hidden" asp-for="PhotoId" value="@ViewBag.PhotoId" />
-            <div class="form-group">
-                <input type="submit" value="Save to Album" class="btn btn-primary" />
+            <div class="d-flex flex-row">
+                <input type="submit" value="Save to Album" class="btn btn-primary mr-1" />
+                <a href="javascript: history.go(-1)" class="btn btn-secondary">Cancel</a>
             </div>
         </form>
     </div>
-</div>
-
-<div>
-    <a href="javascript: history.go(-1)">Go Back</a>
 </div>
 
 @section Scripts {
