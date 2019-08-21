@@ -356,7 +356,7 @@ namespace _1000Words.Controllers
                             else
                             {
                                 Description description = new Description();
-                                description.Keyword = keyword.ToLower();
+                                description.Keyword = keyword;
                                 _context.Add(description);
 
                                 PhotoDescription photoDescription = new PhotoDescription();
