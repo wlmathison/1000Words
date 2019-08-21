@@ -50,7 +50,7 @@ namespace _1000Words.Controllers
                 {
                     case "1":
                         // Create a list of individual words entered by user
-                        var searchStringArray = searchString.Split(" ");
+                        var searchStringArray = searchString.ToLower().Split(" ");
 
                         // Expand photo object to include list of photodescriptions and upon those descriptions
                         var userPhotos = _context.Photos.Where(p => p.UserId == currentUser.Id).Include(p => p.PhotoDescriptions).ThenInclude(pd => pd.Description);
@@ -62,7 +62,7 @@ namespace _1000Words.Controllers
                             var descriptions = new List<string>();
                             foreach (PhotoDescription pd in photo.PhotoDescriptions)
                             {
-                                descriptions.Add(pd.Description.Keyword);
+                                descriptions.Add(pd.Description.Keyword.ToLower());
                             }
 
                             // If the list of search strings are all contained within the list of descriptions on the photo
